@@ -1,0 +1,1 @@
+AI learning platform with competency-gap detection & personalized training    in this dir
