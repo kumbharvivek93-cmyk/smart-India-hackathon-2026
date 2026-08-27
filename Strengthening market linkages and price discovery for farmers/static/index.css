@@ -1,1 +1,645 @@
+:root {
+  --forest-900: #163f37;
+  --forest-800: #1f5d50;
+  --forest-700: #2b7363;
+  --forest-600: #3a8a78;
+  --forest-200: #cfe2db;
+  --forest-100: #e5efe9;
+  --cream-100: #f7f4ea;
+  --cream-200: #efe9d8;
+  --cream-300: #e1d8c1;
+  --ink-900: #173029;
+  --ink-700: #48615a;
+  --white: #ffffff;
+  --shadow-soft: 0 18px 45px rgba(31, 93, 80, 0.10);
+  --shadow-card: 0 12px 35px rgba(22, 63, 55, 0.08);
+  --radius-xl: 26px;
+  --radius-lg: 20px;
+  --radius-md: 16px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Segoe UI", "Trebuchet MS", sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(31, 93, 80, 0.08), transparent 26%),
+    linear-gradient(180deg, #fbf8f0 0%, var(--cream-100) 34%, #f2efe5 100%);
+  color: var(--ink-900);
+}
+
+.text-muted {
+  color: var(--ink-700) !important;
+}
+
+a {
+  text-decoration: none;
+}
+
+.agrilink-navbar {
+  background: rgba(31, 93, 80, 0.96);
+  box-shadow: 0 10px 30px rgba(22, 63, 55, 0.18);
+  backdrop-filter: blur(12px);
+}
+
+.navbar-brand {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.brand-mark {
+  font-size: 1.25rem;
+}
+
+.nav-link {
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-weight: 500;
+}
+
+.nav-link:hover,
+.nav-link:focus,
+.nav-link.active {
+  color: var(--white) !important;
+}
+
+.btn {
+  border-radius: 999px;
+  font-weight: 600;
+  padding: 0.75rem 1.25rem;
+}
+
+.btn-forest {
+  background: var(--forest-800);
+  border-color: var(--forest-800);
+  color: var(--white);
+}
+
+.btn-forest:hover,
+.btn-forest:focus {
+  background: var(--forest-900);
+  border-color: var(--forest-900);
+  color: var(--white);
+}
+
+.btn-outline-forest {
+  border: 1px solid var(--forest-800);
+  color: var(--forest-800);
+  background: transparent;
+}
+
+.btn-outline-forest:hover,
+.btn-outline-forest:focus {
+  background: var(--forest-800);
+  border-color: var(--forest-800);
+  color: var(--white);
+}
+
+.btn-cream {
+  background: var(--cream-100);
+  border-color: var(--cream-100);
+  color: var(--forest-900);
+}
+
+.btn-cream:hover,
+.btn-cream:focus {
+  background: var(--cream-200);
+  border-color: var(--cream-200);
+  color: var(--forest-900);
+}
+
+.section-shell {
+  padding: 5.5rem 0;
+  position: relative;
+}
+
+.section-soft {
+  background: linear-gradient(180deg, rgba(31, 93, 80, 0.03), rgba(255, 255, 255, 0.28));
+}
+
+.hero-section {
+  padding: 7rem 0 5rem;
+}
+
+.eyebrow {
+  display: inline-block;
+  margin-bottom: 0.85rem;
+  color: var(--forest-700);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hero-title {
+  font-weight: 700;
+  line-height: 1.08;
+  max-width: 12ch;
+}
+
+.hero-copy,
+.section-heading p {
+  color: var(--ink-700);
+  font-size: 1.05rem;
+  max-width: 60ch;
+}
+
+.hero-note {
+  background: rgba(31, 93, 80, 0.08);
+  border: 1px solid rgba(31, 93, 80, 0.10);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.1rem;
+  color: var(--forest-900);
+}
+
+.transaction-card,
+.surface-card,
+.comparison-card,
+.roadmap-card,
+.lot-passport-card,
+.modal-shell {
+  border-radius: var(--radius-xl);
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(10px);
+}
+
+.transaction-card {
+  padding: 1.75rem;
+  border: 1px solid rgba(31, 93, 80, 0.08);
+}
+
+.small-label {
+  color: var(--ink-700);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.badge-soft {
+  color: var(--forest-900);
+  background: var(--forest-100);
+}
+
+.badge-outline {
+  color: var(--forest-800);
+  border: 1px solid var(--forest-200);
+  background: transparent;
+}
+
+.mini-metric,
+.dashboard-card {
+  background: linear-gradient(180deg, rgba(31, 93, 80, 0.06), rgba(247, 244, 234, 0.9));
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  height: 100%;
+  border: 1px solid rgba(31, 93, 80, 0.08);
+}
+
+.mini-metric span,
+.dashboard-card span,
+.calc-row span,
+.net-box span,
+.calc-total span {
+  display: block;
+  color: var(--ink-700);
+  font-size: 0.95rem;
+}
+
+.mini-metric strong,
+.dashboard-card strong,
+.net-box strong,
+.calc-total strong {
+  font-size: 1.3rem;
+  color: var(--forest-900);
+}
+
+.cost-list {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.cost-list div,
+.calc-row,
+.passport-grid li,
+.comparison-modal-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cost-list span,
+.calc-row strong,
+.passport-grid li span {
+  color: var(--ink-700);
+}
+
+.net-box,
+.calc-total {
+  background: var(--forest-800);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.1rem;
+}
+
+.net-box span,
+.net-box strong,
+.calc-total span,
+.calc-total strong {
+  color: var(--white);
+}
+
+.section-heading {
+  text-align: center;
+  max-width: 56rem;
+  margin: 0 auto 2.5rem;
+}
+
+.section-heading h2 {
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.metric-card-shell .card-body {
+  padding: 1.5rem;
+}
+
+.metric-icon {
+  width: 54px;
+  height: 54px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  font-size: 1.35rem;
+  color: var(--forest-900);
+  background: linear-gradient(180deg, var(--forest-100), var(--cream-100));
+}
+
+.table {
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--ink-900);
+}
+
+.table thead th {
+  background: rgba(31, 93, 80, 0.08);
+  border-bottom: none;
+  color: var(--forest-900);
+  font-weight: 700;
+  padding: 1rem 1.2rem;
+}
+
+.table tbody td {
+  padding: 1rem 1.2rem;
+  border-color: rgba(31, 93, 80, 0.08);
+}
+
+.best-row {
+  background: rgba(31, 93, 80, 0.08);
+}
+
+.best-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--forest-100);
+  color: var(--forest-900);
+  border-radius: 999px;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.alert-forest {
+  background: rgba(31, 93, 80, 0.08);
+  color: var(--forest-900);
+  border: 1px solid rgba(31, 93, 80, 0.12);
+  border-radius: var(--radius-md);
+}
+
+.status-soft {
+  background: rgba(31, 93, 80, 0.10);
+  color: var(--forest-900);
+}
+
+.status-mid {
+  background: rgba(225, 216, 193, 0.72);
+  color: var(--forest-900);
+}
+
+.status-strong {
+  background: var(--forest-800);
+  color: var(--white);
+}
+
+.form-control,
+.form-select {
+  border-radius: 14px;
+  border-color: rgba(31, 93, 80, 0.18);
+  padding: 0.85rem 1rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--forest-700);
+  box-shadow: 0 0 0 0.25rem rgba(31, 93, 80, 0.12);
+}
+
+.calc-result {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.effective-pill {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  background: rgba(31, 93, 80, 0.08);
+  border-radius: 999px;
+  width: fit-content;
+  padding: 0.75rem 1rem;
+  color: var(--forest-900);
+}
+
+.buyer-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.buyer-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(22, 63, 55, 0.12);
+}
+
+.buyer-card .card-body {
+  padding: 1.5rem;
+}
+
+.rating-pill,
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: var(--cream-100);
+  color: var(--forest-900);
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.buyer-meta {
+  display: grid;
+  gap: 0.65rem;
+  margin: 1rem 0 1.25rem;
+}
+
+.buyer-meta div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--ink-700);
+}
+
+.compare-strip {
+  border-radius: var(--radius-xl);
+  padding: 1.4rem;
+  background: var(--forest-900);
+  color: var(--white);
+  box-shadow: var(--shadow-card);
+}
+
+.compare-strip .eyebrow {
+  color: var(--cream-200);
+}
+
+.passport-top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.passport-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.passport-grid li {
+  background: rgba(31, 93, 80, 0.06);
+  border-radius: var(--radius-md);
+  padding: 0.95rem 1rem;
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.passport-grid li strong {
+  font-size: 1rem;
+}
+
+.qr-placeholder {
+  width: 110px;
+  height: 110px;
+  border-radius: 18px;
+  background:
+    linear-gradient(90deg, var(--forest-900) 12%, transparent 12%, transparent 24%, var(--forest-900) 24%, var(--forest-900) 36%, transparent 36%, transparent 48%, var(--forest-900) 48%, var(--forest-900) 60%, transparent 60%),
+    linear-gradient(var(--forest-900) 12%, transparent 12%, transparent 24%, var(--forest-900) 24%, var(--forest-900) 36%, transparent 36%, transparent 48%, var(--forest-900) 48%, var(--forest-900) 60%, transparent 60%),
+    var(--cream-100);
+  border: 8px solid var(--white);
+  box-shadow: inset 0 0 0 1px rgba(31, 93, 80, 0.15);
+}
+
+.progress-thick {
+  height: 1.1rem;
+  border-radius: 999px;
+  background: rgba(31, 93, 80, 0.12);
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, var(--forest-700), var(--forest-800));
+  font-weight: 700;
+}
+
+.timeline {
+  display: grid;
+  gap: 1rem;
+}
+
+.timeline-item {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.timeline-marker {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(31, 93, 80, 0.12);
+  color: var(--forest-700);
+  font-weight: 700;
+}
+
+.timeline-item.active .timeline-marker,
+.timeline-item.completed .timeline-marker {
+  background: var(--forest-800);
+  color: var(--white);
+}
+
+.timeline-item small {
+  color: var(--ink-700);
+}
+
+.backup-flow {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.flow-step {
+  text-align: center;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-md);
+  background: rgba(31, 93, 80, 0.06);
+  border: 1px solid rgba(31, 93, 80, 0.08);
+  font-weight: 600;
+}
+
+.flow-step.active {
+  background: rgba(31, 93, 80, 0.13);
+}
+
+.flow-step.alert-step {
+  background: rgba(225, 216, 193, 0.55);
+}
+
+.flow-arrow {
+  text-align: center;
+  color: var(--forest-700);
+}
+
+.payment-card .card-body {
+  padding: 1.5rem;
+}
+
+.payment-state {
+  width: 100%;
+  height: 0.65rem;
+  border-radius: 999px;
+  background: rgba(31, 93, 80, 0.10);
+  overflow: hidden;
+  margin-top: 1rem;
+}
+
+.payment-state span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--forest-600), var(--forest-800));
+}
+
+.comparison-card.featured {
+  background: linear-gradient(180deg, rgba(31, 93, 80, 0.92), rgba(22, 63, 55, 0.96));
+  color: var(--white);
+}
+
+.comparison-card.featured .comparison-list li,
+.comparison-card.featured h3 {
+  color: var(--white);
+}
+
+.comparison-list {
+  padding-left: 1.2rem;
+  margin-bottom: 0;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.comparison-list li {
+  color: var(--ink-900);
+}
+
+.benefit-card .card-body {
+  padding: 1.5rem;
+}
+
+.benefit-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  background: rgba(31, 93, 80, 0.1);
+  color: var(--forest-900);
+  font-size: 1.3rem;
+}
+
+.roadmap-card.future {
+  border: 1px dashed rgba(31, 93, 80, 0.22);
+}
+
+.help-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.75rem 0;
+  color: var(--ink-900);
+}
+
+.help-item + .help-item {
+  border-top: 1px solid rgba(31, 93, 80, 0.08);
+}
+
+.footer-shell {
+  background: var(--forest-900);
+  padding: 2rem 0;
+}
+
+.toast {
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.text-forest {
+  color: var(--forest-800) !important;
+}
+
+@media (max-width: 991.98px) {
+  .hero-section {
+    padding-top: 5.5rem;
+  }
+
+  .hero-title {
+    max-width: none;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .section-shell {
+    padding: 4rem 0;
+  }
+
+  .passport-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .transaction-card,
+  .surface-card,
+  .comparison-card,
+  .roadmap-card,
+  .lot-passport-card {
+    border-radius: 22px;
+  }
+}
 
