@@ -1,0 +1,2 @@
+vedant put the html files for each route here , you can just modify the files from templates and put the code of each file updatedd here 
+
