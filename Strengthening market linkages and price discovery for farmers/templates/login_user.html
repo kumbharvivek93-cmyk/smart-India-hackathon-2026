@@ -1,15 +1,449 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>login_user</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1F5D50">
+  <title>Login | AgriLink</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <style>
+    :root {
+  --forest: #1F5D50;
+  --forest-dark: #17493f;
+  --cream: #F7F4EA;
+  --ink: #24463f;
+  --muted: #6c8179;
+  --line: #dbe7df;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: var(--cream);
+  overflow: hidden;
+}
+.login-page { height: 100vh; height: 100dvh; overflow: hidden; position: relative; display: flex; flex-direction: column; }
+.topbar { width: 100%; display: flex; align-items: center; justify-content: space-between; padding-top: 20px; position: relative; z-index: 2; flex: 0 0 auto; }
+.brand-mini, .back-link { color: var(--forest); text-decoration: none; font-weight: 700; }
+.brand-mini { display: inline-flex; align-items: center; gap: 9px; font-size: 1.18rem; }
+.brand-mark { display: grid; place-items: center; width: 31px; height: 31px; border-radius: 10px; color: var(--cream); background: var(--forest); }
+.back-link { font-size: .86rem; font-weight: 600; opacity: .8; transition: opacity .2s ease; }
+.back-link:hover { opacity: 1; color: var(--forest-dark); }
+.login-content { width: 100%; flex: 1 1 auto; min-height: 0; display: flex; align-items: center; position: relative; z-index: 1; padding-top: 10px; padding-bottom: 10px; }
+.login-column { order: 2; }
+.brand-panel { opacity: 0; transform: translateY(12px); animation: brand-in .9s .05s cubic-bezier(.2,.8,.2,1) forwards; padding: 10px 22px 10px 7%; }
+.brand-logo { width: 145px; height: 125px; position: relative; margin-bottom: 28px; }
+.farmer-photo-frame { position: absolute; width: 108px; height: 108px; left: 18px; top: 7px; padding: 5px; border: 2px solid var(--forest); border-radius: 50%; background: var(--cream); box-shadow: 0 8px 18px rgba(31,93,80,.16); overflow: hidden; }
+.farmer-photo { width: 100%; height: 100%; display: block; object-fit: cover; border-radius: 50%; }
+.photo-fallback { display: none; place-items: center; position: absolute; inset: 5px; border-radius: 50%; background: #b8d0c2; color: var(--forest); font-size: 3.5rem; }
+.farmer-photo:not([src]) + .photo-fallback, .farmer-photo-frame.photo-error .photo-fallback { display: grid; }
+.eyebrow { color: var(--forest); font-weight: 700; letter-spacing: .03em; margin-bottom: 10px; }
+h1 { color: var(--forest); font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 700; line-height: 1.08; letter-spacing: -.04em; margin: 0; }
+h1 em { font-style: normal; color: var(--forest-dark); }
+.brand-copy { color: var(--muted); font-size: 1.06rem; line-height: 1.7; margin: 24px 0; }
+.brand-rule { width: 44px; height: 3px; border-radius: 9px; background: var(--forest); margin-bottom: 18px; }
+.brand-note { color: var(--muted); font-size: .83rem; margin: 0; }
+.brand-note i { color: var(--forest); margin-right: 5px; }
+.login-card { border: 1px solid var(--line); border-radius: 20px; background: rgba(255,255,255,.9); box-shadow: 0 16px 45px rgba(31,93,80,.1); opacity: 0; transform: translateY(32px) scale(.98); filter: blur(3px); animation: card-in .85s .18s cubic-bezier(.2,.8,.2,1) forwards; }
+.card-body { padding: clamp(24px, 3.2vw, 36px); }
+.card-heading { margin-bottom: 28px; }
+.welcome-icon { display: grid; place-items: center; width: 40px; height: 40px; color: var(--forest); background: var(--cream); border-radius: 12px; margin-bottom: 15px; }
+h2 { color: var(--forest); font-size: 1.65rem; letter-spacing: -.03em; margin: 0 0 7px; }
+.card-heading p { color: var(--muted); font-size: .9rem; margin: 0; }
+.field-group { margin-bottom: 19px; }
+.form-label { color: var(--ink); font-size: .83rem; font-weight: 700; margin-bottom: 8px; }
+.input-wrap { position: relative; }
+.input-wrap > i { position: absolute; left: 15px; top: 14px; color: var(--forest); z-index: 2; }
+.form-control { height: 48px; border: 1px solid var(--line); border-radius: 11px; color: var(--ink); font-size: .9rem; padding-left: 43px; padding-right: 42px; background: #fff; }
+.form-control::placeholder { color: #9aaea6; }
+.form-control:focus { border-color: var(--forest); box-shadow: 0 0 0 3px rgba(31,93,80,.12); }
+.password-toggle { border: 0; background: transparent; color: var(--muted); position: absolute; right: 11px; top: 8px; width: 33px; height: 33px; border-radius: 8px; }
+.password-toggle:hover, .password-toggle:focus { color: var(--forest); background: var(--cream); }
+.invalid-feedback { font-size: .76rem; }
+.form-options { display: flex; justify-content: space-between; align-items: center; margin: 2px 0 24px; }
+.form-check-label, .forgot-link { color: var(--muted); font-size: .78rem; }
+.form-check-input { border-color: #afc6ba; }
+.form-check-input:checked { background-color: var(--forest); border-color: var(--forest); }
+.forgot-link { border: 0; padding: 0; background: transparent; color: var(--forest); font-weight: 700; }
+.login-button { width: 100%; height: 48px; border: 0; border-radius: 11px; background: var(--forest); font-weight: 700; transition: transform .2s ease, background .2s ease; }
+.login-button:hover { background: var(--forest-dark); transform: translateY(-2px); }
+.login-button:active { transform: scale(.98); }
+.or-divider { display: flex; align-items: center; gap: 12px; color: #91a59d; font-size: .7rem; letter-spacing: .1em; margin: 27px 0 18px; }
+.or-divider::before, .or-divider::after { content: ""; height: 1px; flex: 1; background: var(--line); }
+.demo-button { width: 100%; height: 46px; border: 1px solid #bfd3c8; border-radius: 11px; color: var(--forest); font-size: .86rem; font-weight: 700; background: transparent; transition: transform .2s ease, background .2s ease; }
+.demo-button:hover { color: var(--forest); background: var(--cream); transform: translateY(-2px); }
+.register-prompt { color: var(--muted); font-size: .82rem; text-align: center; margin: 25px 0 0; }
+.register-prompt a { color: var(--forest); font-weight: 700; text-decoration: none; }
+.register-prompt a:hover, .forgot-link:hover { text-decoration: underline; }
+.form-field { opacity: 0; transform: translateX(-10px); animation: field-in .55s var(--field-delay) cubic-bezier(.2,.8,.2,1) forwards; }
+.trust-footer { display: flex; gap: 28px; justify-content: center; color: var(--muted); font-size: .76rem; padding: 8px 0 15px; position: relative; z-index: 1; flex: 0 0 auto; }
+.trust-footer i { color: var(--forest); font-size: .9rem; margin-right: 5px; }
+.success-toast, .info-toast { color: var(--cream); border: 0; border-radius: 12px; background: var(--forest); box-shadow: 0 8px 25px rgba(31,93,80,.2); }
+.info-toast { background: var(--forest-dark); }
+.toast-body { font-size: .85rem; padding: 13px 16px; }
+.toast-body i { margin-right: 7px; }
+.page-leaving { opacity: 0; transition: opacity .25s ease; }
+.register-modal { border: 1px solid var(--line); border-radius: 20px; background: var(--cream); color: var(--ink); }
+.modal-header { border-bottom: 1px solid var(--line); padding: 25px 27px 20px; }
+.modal-body { padding: 23px 27px 10px; }
+.modal-footer { border-top: 0; padding: 10px 27px 27px; }
+.modal-footer .login-button { height: 46px; }
+.modal-eyebrow { color: var(--forest); font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 7px; }
+.modal-title { color: var(--forest); font-size: 1.35rem; }
+.modal-subtitle { color: var(--muted); font-size: .82rem; margin: 5px 0 0; }
+.register-field { margin-bottom: 16px; }
+.register-modal .form-control, .register-modal .form-select { height: 45px; border-radius: 10px; border-color: var(--line); font-size: .85rem; }
+.register-modal .form-select { color: var(--muted); }
+.terms-check { font-size: .76rem; color: var(--muted); }
+.terms-check .form-check-input { margin-top: .15rem; }
+.background-shapes { position: absolute; inset: 0; pointer-events: none; }
+.shape { position: absolute; color: var(--forest); opacity: .07; }
+.shape-circle { width: 80px; height: 80px; border: 2px solid var(--forest); border-radius: 50%; }
+.shape-leaf { font-size: 3rem; }
+.shape-one { top: 17%; left: 4%; }
+.shape-two { top: 30%; right: 5%; }
+.shape-three { bottom: 12%; left: 35%; width: 42px; height: 42px; }
+.shape-four { bottom: 23%; right: 20%; }
+.shape-five { top: 8%; right: 28%; width: 25px; height: 25px; }
+@keyframes brand-in { to { opacity: 1; transform: translateY(0); } }
+@keyframes card-in { to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } }
+@keyframes field-in { to { opacity: 1; transform: translateX(0); } }
+@media (max-width: 991.98px) { body { overflow: hidden; } .login-page { height: 100vh; height: 100dvh; min-height: 0; overflow: hidden; } .login-content { flex: 1 1 auto; overflow: hidden; } .brand-panel { padding-left: 0; text-align: center; } .brand-logo { margin: 0 auto 20px; } .brand-rule { margin-left: auto; margin-right: auto; } }
+@media (min-width: 992px) { .login-content > .row { width: 100%; } .login-column { display: flex; justify-content: flex-end; margin-left: auto; } .login-column .login-card { width: 100%; } }
+@media (max-width: 575.98px) { .topbar { padding-top: 14px; } .back-link { font-size: 0; } .back-link i { font-size: 1rem; } .login-content { padding-top: 8px; } .brand-panel { padding-top: 0; padding-bottom: 5px; } .brand-logo { width: 90px; height: 76px; margin-bottom: 8px; transform: scale(.72); transform-origin: top center; } .eyebrow { margin-bottom: 3px; font-size: .8rem; } h1 { font-size: 1.65rem; } .brand-copy { font-size: .82rem; line-height: 1.35; margin: 8px 0; } .brand-rule, .brand-note { display: none; } .login-card { border-radius: 16px; } .card-body { padding: 17px 17px; } .card-heading { margin-bottom: 15px; } .welcome-icon { width: 32px; height: 32px; margin-bottom: 8px; } h2 { font-size: 1.3rem; } .field-group { margin-bottom: 11px; } .form-control { height: 42px; } .input-wrap > i { top: 11px; } .password-toggle { top: 5px; } .form-options { margin-bottom: 14px; } .or-divider { margin: 16px 0 10px; } .demo-button { height: 40px; } .register-prompt { margin-top: 14px; } .trust-footer { gap: 14px; padding: 8px 0 10px; } .trust-footer span { font-size: .64rem; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
+
+  </style>
 </head>
+
 <body>
-    <form method="post">
-        <input type="email" name="email" placeholder="enter email" required>
-        <input type="password" name="password" placeholder="enter your password" required>
-        <input type="submit" value="submit">
-    </form>
+  <main class="login-page">
+    <div class="background-shapes" aria-hidden="true">
+      <span class="shape shape-circle shape-one"></span>
+      <span class="shape shape-leaf shape-two"><i class="bi bi-leaf"></i></span>
+      <span class="shape shape-circle shape-three"></span>
+      <span class="shape shape-leaf shape-four"><i class="bi bi-flower1"></i></span>
+      <span class="shape shape-circle shape-five"></span>
+    </div>
+
+    <nav class="topbar container" aria-label="Primary navigation">
+      <a class="brand-mini" href="index.html" aria-label="AgriLink home">
+        <span class="brand-mark"><i class="bi bi-tree" aria-hidden="true"></i></span>
+        <span>AgriLink</span>
+      </a>
+      <a class="back-link" href="index.html"><i class="bi bi-arrow-left"></i> Back to home</a>
+    </nav>
+
+    <section class="container login-content">
+      <div class="row align-items-center justify-content-center g-4 g-lg-5">
+        <div class="col-12 col-lg-5">
+          <div class="brand-panel">
+            <div class="brand-logo" aria-hidden="true">
+              <div class="farmer-photo-frame">
+                <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=500&q=85"
+                  alt="Farmer using a farming tool in a field" class="farmer-photo">
+                <span class="photo-fallback"><i class="bi bi-person-fill"></i></span>
+              </div>
+            </div>
+            <p class="eyebrow">🌾 AgriLink</p>
+            <h1>Farmer Market<br><em>Assurance</em></h1>
+            <p class="brand-copy">Connect with better markets.<br>Sell with confidence.</p>
+            <div class="brand-rule" aria-hidden="true"></div>
+            <p class="brand-note"><i class="bi bi-check2-circle"></i> Built for farmers, by a community that cares.</p>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-9 col-lg-7 col-xl-6 login-column">
+          <div class="card login-card">
+            <div class="card-body">
+              <div class="card-heading">
+                <span class="welcome-icon" aria-hidden="true"><i class="bi bi-hand-wave"></i></span>
+                <h2>Welcome Back <span aria-hidden="true">👋</span></h2>
+                <p>Login to continue to your farmer dashboard</p>
+              </div>
+
+              <form id="loginForm" novalidate>
+                <div class="field-group form-field" style="--field-delay: 100ms">
+                  <label for="identity" class="form-label">Mobile Number / Email</label>
+                  <div class="input-wrap">
+                    <i class="bi bi-person" aria-hidden="true"></i>
+                    <input type="text" class="form-control" id="identity" placeholder="Enter mobile number or email"
+                      autocomplete="username" required>
+                  </div>
+                  <div class="invalid-feedback">Please enter your mobile number or email.</div>
+                </div>
+
+                <div class="field-group form-field" style="--field-delay: 180ms">
+                  <label for="password" class="form-label">Password</label>
+                  <div class="input-wrap">
+                    <i class="bi bi-lock" aria-hidden="true"></i>
+                    <input type="password" class="form-control" id="password" placeholder="Enter your password"
+                      autocomplete="current-password" minlength="6" required>
+                    <button class="password-toggle" id="togglePassword" type="button" aria-label="Show password"
+                      aria-pressed="false">
+                      <i class="bi bi-eye" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <div class="invalid-feedback">Password must be at least 6 characters.</div>
+                </div>
+
+                <div class="form-options form-field" style="--field-delay: 260ms">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="rememberMe">
+                    <label class="form-check-label" for="rememberMe">Remember me</label>
+                  </div>
+                  <button type="button" class="forgot-link" id="forgotPassword">Forgot Password?</button>
+                </div>
+
+                <button type="submit" class="btn btn-primary login-button form-field" style="--field-delay: 340ms"
+                  id="loginButton">
+                  <span class="button-label">Login <span aria-hidden="true">→</span></span>
+                  <span class="button-loading d-none"><span class="spinner-border spinner-border-sm"
+                      aria-hidden="true"></span> Logging in...</span>
+                </button>
+              </form>
+
+              <div class="alternative-login form-field" style="--field-delay: 420ms">
+                <div class="or-divider"><span>OR</span></div>
+                <button type="button" class="btn demo-button" id="demoButton">
+                  <i class="bi bi-shop" aria-hidden="true"></i> Continue as Demo Farmer
+                </button>
+              </div>
+
+              <p class="register-prompt form-field" style="--field-delay: 500ms">New to AgriLink? <a href="#"
+                  id="createAccount">Create Account</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="successToast" class="toast success-toast" role="status" aria-live="polite" aria-atomic="true">
+      <div class="toast-body"><i class="bi bi-check-circle-fill" aria-hidden="true"></i> Login successful! Welcome to
+        AgriLink.</div>
+    </div>
+
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content register-modal">
+          <div class="modal-header">
+            <div>
+              <p class="modal-eyebrow">Join the community</p>
+              <h2 class="modal-title" id="registerTitle">Create your AgriLink account</h2>
+              <p class="modal-subtitle">A few details to get your farmer journey started.</p>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close registration form"></button>
+          </div>
+          <form id="registerForm" novalidate>
+            <div class="modal-body">
+              <div class="register-field">
+                <label for="registerName" class="form-label">Full name</label>
+                <input type="text" class="form-control" id="registerName" placeholder="Enter your full name" required>
+                <div class="invalid-feedback">Please enter your full name.</div>
+              </div>
+              <div class="register-field">
+                <label for="registerContact" class="form-label">Mobile number or email</label>
+                <input type="text" class="form-control" id="registerContact" placeholder="e.g. 98765 43210 or you@example.com" required>
+                <div class="invalid-feedback">Please enter a mobile number or email.</div>
+              </div>
+              <div class="row g-3">
+                <div class="col-sm-6 register-field">
+                  <label for="registerPassword" class="form-label">Create password</label>
+                  <input type="password" class="form-control" id="registerPassword" placeholder="At least 6 characters" minlength="6" required>
+                  <div class="invalid-feedback">Use at least 6 characters.</div>
+                </div>
+                <div class="col-sm-6 register-field">
+                  <label for="confirmPassword" class="form-label">Confirm password</label>
+                  <input type="password" class="form-control" id="confirmPassword" placeholder="Re-enter password" required>
+                  <div class="invalid-feedback">Passwords must match.</div>
+                </div>
+              </div>
+              <div class="register-field">
+                <label for="accountRole" class="form-label">I am joining as</label>
+                <select class="form-select" id="accountRole" required>
+                  <option value="" selected disabled>Select your role</option>
+                  <option>Farmer</option>
+                  <option>Buyer</option>
+                  <option>Agri partner</option>
+                </select>
+                <div class="invalid-feedback">Please select a role.</div>
+              </div>
+              <div class="row g-3">
+                <div class="col-sm-6 register-field">
+                  <label for="registerState" class="form-label">State</label>
+                  <input type="text" class="form-control" id="registerState" placeholder="Enter your state" required>
+                  <div class="invalid-feedback">Please enter your state.</div>
+                </div>
+                <div class="col-sm-6 register-field">
+                  <label for="registerDistrict" class="form-label">District</label>
+                  <input type="text" class="form-control" id="registerDistrict" placeholder="Enter your district" required>
+                  <div class="invalid-feedback">Please enter your district.</div>
+                </div>
+                <div class="col-sm-6 register-field">
+                  <label for="registerTaluka" class="form-label">Taluka</label>
+                  <input type="text" class="form-control" id="registerTaluka" placeholder="Enter your taluka" required>
+                  <div class="invalid-feedback">Please enter your taluka.</div>
+                </div>
+                <div class="col-sm-6 register-field">
+                  <label for="registerPincode" class="form-label">Pincode</label>
+                  <input type="text" class="form-control" id="registerPincode" placeholder="Enter your pincode" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required>
+                  <div class="invalid-feedback">Please enter a valid 6-digit pincode.</div>
+                </div>
+              </div>
+              <div class="form-check terms-check register-field">
+                <input class="form-check-input" type="checkbox" id="agreeTerms" required>
+                <label class="form-check-label" for="agreeTerms">I agree to the AgriLink terms and privacy guidelines.</label>
+                <div class="invalid-feedback">Please accept the terms to continue.</div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn login-button">Create Account <span aria-hidden="true">→</span></button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div id="infoToast" class="toast info-toast" role="status" aria-live="polite" aria-atomic="true">
+      <div class="toast-body"><i class="bi bi-info-circle-fill" aria-hidden="true"></i> Password reset is available from
+        your registered contact.</div>
+    </div>
+    <div id="registerToast" class="toast success-toast" role="status" aria-live="polite" aria-atomic="true">
+      <div class="toast-body"><i class="bi bi-check-circle-fill" aria-hidden="true"></i> Account details saved for your AgriLink journey.</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    (() => {
+  "use strict";
+
+  const form = document.getElementById("loginForm");
+  const identity = document.getElementById("identity");
+  const password = document.getElementById("password");
+  const togglePassword = document.getElementById("togglePassword");
+  const loginButton = document.getElementById("loginButton");
+  const demoButton = document.getElementById("demoButton");
+  const forgotPassword = document.getElementById("forgotPassword");
+  const createAccount = document.getElementById("createAccount");
+  const registerForm = document.getElementById("registerForm");
+  const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));
+  const farmerPhoto = document.querySelector(".farmer-photo");
+  const successToast = new bootstrap.Toast(document.getElementById("successToast"), { delay: 1200 });
+  const infoToast = new bootstrap.Toast(document.getElementById("infoToast"), { delay: 3500 });
+  const registerToast = new bootstrap.Toast(document.getElementById("registerToast"), { delay: 3500 });
+
+  farmerPhoto.addEventListener("error", () => {
+    farmerPhoto.closest(".farmer-photo-frame").classList.add("photo-error");
+  });
+
+  const setLoading = (loading) => {
+    loginButton.disabled = loading;
+    loginButton.querySelector(".button-label").classList.toggle("d-none", loading);
+    loginButton.querySelector(".button-loading").classList.toggle("d-none", !loading);
+  };
+
+  const validate = () => {
+    const identityValid = identity.value.trim().length > 0;
+    const passwordValid = password.value.length >= 6;
+    identity.classList.toggle("is-invalid", !identityValid);
+    identity.classList.toggle("is-valid", identityValid);
+    password.classList.toggle("is-invalid", !passwordValid);
+    password.classList.toggle("is-valid", passwordValid);
+    return identityValid && passwordValid;
+  };
+
+  togglePassword.addEventListener("click", () => {
+    const isPassword = password.type === "password";
+    password.type = isPassword ? "text" : "password";
+    togglePassword.setAttribute("aria-label", isPassword ? "Hide password" : "Show password");
+    togglePassword.setAttribute("aria-pressed", String(isPassword));
+    togglePassword.querySelector("i").className = isPassword ? "bi bi-eye-slash" : "bi bi-eye";
+  });
+
+  identity.addEventListener("input", () => {
+    if (identity.classList.contains("is-invalid")) validate();
+  });
+  password.addEventListener("input", () => {
+    if (password.classList.contains("is-invalid")) validate();
+  });
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!validate()) return;
+    setLoading(true);
+    window.setTimeout(() => {
+      successToast.show();
+      window.setTimeout(() => {
+        document.body.classList.add("page-leaving");
+        window.setTimeout(() => { window.location.href = "index.html"; }, 250);
+      }, 950);
+    }, 700);
+  });
+
+  demoButton.addEventListener("click", () => {
+    identity.value = "demo@agrilink.in";
+    password.value = "farmer123";
+    form.requestSubmit();
+  });
+
+  forgotPassword.addEventListener("click", () => infoToast.show());
+
+  createAccount.addEventListener("click", (event) => {
+    event.preventDefault();
+    registerForm.reset();
+    registerForm.classList.remove("was-validated");
+    registerForm.querySelectorAll(".is-invalid, .is-valid").forEach((field) => field.classList.remove("is-invalid", "is-valid"));
+    registerModal.show();
+  });
+
+  registerForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const registerName = document.getElementById("registerName");
+    const registerContact = document.getElementById("registerContact");
+    const registerPassword = document.getElementById("registerPassword");
+    const confirmPassword = document.getElementById("confirmPassword");
+    const accountRole = document.getElementById("accountRole");
+    const registerState = document.getElementById("registerState");
+    const registerDistrict = document.getElementById("registerDistrict");
+    const registerTaluka = document.getElementById("registerTaluka");
+    const registerPincode = document.getElementById("registerPincode");
+    const agreeTerms = document.getElementById("agreeTerms");
+
+    const fieldValidity = new Map([
+      [registerName, registerName.value.trim().length > 0],
+      [registerContact, registerContact.value.trim().length > 0],
+      [registerPassword, registerPassword.value.length >= 6],
+      [confirmPassword, confirmPassword.value === registerPassword.value && registerPassword.value.length >= 6],
+      [accountRole, accountRole.value !== ""],
+      [registerState, registerState.value.trim().length > 0],
+      [registerDistrict, registerDistrict.value.trim().length > 0],
+      [registerTaluka, registerTaluka.value.trim().length > 0],
+      [registerPincode, /^[0-9]{6}$/.test(registerPincode.value.trim())],
+      [agreeTerms, agreeTerms.checked]
+    ]);
+
+    fieldValidity.forEach((isValid, field) => {
+      field.classList.toggle("is-invalid", !isValid);
+      field.classList.toggle("is-valid", isValid);
+    });
+
+    if (![...fieldValidity.values()].every(Boolean)) return;
+    registerModal.hide();
+    registerToast.show();
+  });
+})();
+
+  </script>
 </body>
+
 </html>
