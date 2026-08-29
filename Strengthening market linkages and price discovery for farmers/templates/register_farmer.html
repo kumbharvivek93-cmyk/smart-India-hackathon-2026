@@ -1,0 +1,399 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Farmer Registration</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #f1f8e9;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 750px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2e7d32;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #bbb;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #4caf50;
+        }
+
+        .row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .row .form-group {
+            flex: 1;
+        }
+
+        .farm-size {
+            display: flex;
+            gap: 10px;
+        }
+
+        .farm-size input {
+            flex: 2;
+        }
+
+        .farm-size select {
+            flex: 1;
+        }
+
+        .fpo-section {
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 25px;
+            margin-top: 8px;
+        }
+
+        .radio-group label {
+            font-weight: normal;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .radio-group input {
+            width: auto;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 7px;
+            background: #2e7d32;
+            color: white;
+            font-size: 17px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background: #1b5e20;
+        }
+
+        .required {
+            color: red;
+        }
+
+        @media (max-width: 600px) {
+            .row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .farm-size {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🌾 Farmer Registration</h1>
+
+    <form method="post">
+
+        <!-- Full Name -->
+        <div class="form-group">
+            <label for="full_name">
+                Full Name <span class="required">*</span>
+            </label>
+
+            <input
+                type="text"
+                id="full_name"
+                name="full_name"
+                placeholder="Enter your full name"
+                required
+            >
+        </div>
+
+
+        <!-- Phone -->
+        <div class="form-group">
+            <label for="phone">
+                Phone Number <span class="required">*</span>
+            </label>
+
+            <input
+                type="tel"
+                id="phone"
+                name="phone"
+                placeholder="Enter 10 digit mobile number"
+                pattern="[0-9]{10}"
+                maxlength="10"
+                required
+            >
+        </div>
+
+
+        <!-- Taluka and Village -->
+        <div class="row">
+
+            <div class="form-group">
+                <label for="taluka">
+                    Taluka <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    id="taluka"
+                    name="taluka"
+                    placeholder="Enter taluka"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="village">
+                    Village <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    id="village"
+                    name="village"
+                    placeholder="Enter village"
+                    required
+                >
+            </div>
+
+        </div>
+
+
+        <!-- District and State -->
+        <div class="row">
+
+            <div class="form-group">
+                <label for="district">
+                    District <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    id="district"
+                    name="district"
+                    placeholder="Enter district"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="state">
+                    State <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    id="state"
+                    name="state"
+                    placeholder="Enter state"
+                    value="Maharashtra"
+                    required
+                >
+            </div>
+
+        </div>
+
+
+        <!-- Pincode -->
+        <div class="form-group">
+            <label for="pincode">
+                Pincode <span class="required">*</span>
+            </label>
+
+            <input
+                type="text"
+                id="pincode"
+                name="pincode"
+                placeholder="Enter 6 digit pincode"
+                pattern="[0-9]{6}"
+                maxlength="6"
+                required
+            >
+        </div>
+
+
+        <!-- Farm Size -->
+        <div class="form-group">
+
+            <label>
+                Farm Size <span class="required">*</span>
+            </label>
+
+            <div class="farm-size">
+
+                <input
+                    type="number"
+                    id="farm_size"
+                    name="farm_size"
+                    placeholder="Enter farm size"
+                    min="0"
+                    step="0.01"
+                    required
+                >
+
+                <select
+                    name="farm_size_unit"
+                    id="farm_size_unit"
+                    required
+                >
+                    <option value="">Select unit</option>
+                    <option value="acre">Acre</option>
+                    <option value="hectare">Hectare</option>
+                    <option value="gunta">Gunta</option>
+                    <!-- <option value="guntha">Guntha</option> -->
+                    <option value="sqft">Square Feet</option>
+                    <option value="sq_meter">Square Meter</option>
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <!-- FPO Member -->
+        <div class="fpo-section">
+
+            <div class="form-group">
+
+                <label>
+                    Are you an FPO member?
+                    <span class="required">*</span>
+                </label>
+
+                <div class="radio-group">
+
+                    <label>
+                        <input
+                            type="radio"
+                            name="fpo_member"
+                            value="yes"
+                            required
+                            onclick="showFpoName()"
+                        >
+                        Yes
+                    </label>
+
+                    <label>
+                        <input
+                            type="radio"
+                            name="fpo_member"
+                            value="no"
+                            required
+                            onclick="hideFpoName()"
+                        >
+                        No
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <!-- FPO Name -->
+            <div
+                class="form-group"
+                id="fpo-name-section"
+                style="display: none;"
+            >
+
+                <label for="fpo_name">
+                    FPO Name
+                </label>
+
+                <input
+                    type="text"
+                    id="fpo_name"
+                    name="fpo_name"
+                    placeholder="Enter FPO name"
+                >
+
+            </div>
+
+        </div>
+
+
+        <!-- Submit -->
+        <button type="submit">
+            Register as Farmer
+        </button>
+
+    </form>
+
+</div>
+
+
+<script>
+
+    function showFpoName() {
+        document.getElementById("fpo-name-section").style.display = "block";
+        document.getElementById("fpo_name").required = true;
+    }
+
+    function hideFpoName() {
+        document.getElementById("fpo-name-section").style.display = "none";
+        document.getElementById("fpo_name").required = false;
+        document.getElementById("fpo_name").value = "";
+    }
+
+</script>
+
+</body>
+</html>
+```
