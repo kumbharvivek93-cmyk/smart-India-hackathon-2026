@@ -1,9 +1,0 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Dashboard | AgriLink</title></head>
-<body>
-  <h1>Welcome, {{ user.username }}</h1>
-  {% with messages = get_flashed_messages() %}{% if messages %}<ul>{% for message in messages %}<li>{{ message }}</li>{% endfor %}</ul>{% endif %}{% endwith %}
-  <p>Role: {{ role|capitalize }}</p>
-  {% if role == 'farmer' %}<p>Farmer profile: {{ profile.full_name }}</p>{% else %}<p>Buyer profile: {{ profile.company_name }}</p>{% endif %}
-  <p><a href="{{ url_for('logout') }}">Log out</a></p>
-</body></html>
