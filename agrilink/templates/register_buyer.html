@@ -1,13 +1,696 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Buyer profile | AgriLink</title></head>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Buyer profile | AgriLink</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap" rel="stylesheet">
+  <style>:root {
+  --cream-050: #fffdf7;
+  --cream-100: #f7f4ea;
+  --cream-200: #efe8d7;
+  --cream-300: #e2d7bf;
+  --green-700: #1f5d50;
+  --green-800: #184a40;
+  --green-900: #113731;
+  --green-100: #dce8e3;
+  --green-050: #edf4f1;
+  --text-main: #163a33;
+  --text-soft: #5f706b;
+  --line-soft: rgba(31, 93, 80, 0.12);
+  --shadow-soft: 0 28px 60px rgba(17, 55, 49, 0.08);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(31, 93, 80, 0.08), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(31, 93, 80, 0.06), transparent 22%),
+    var(--cream-100);
+  color: var(--text-main);
+  font-family: "Manrope", sans-serif;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.page-shell {
+  min-height: 100vh;
+  padding: 32px;
+}
+
+.registration-layout {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  align-items: stretch;
+  min-height: calc(100vh - 64px);
+  background: rgba(255, 253, 247, 0.55);
+  border: 1px solid rgba(31, 93, 80, 0.08);
+  border-radius: 30px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.brand-panel {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(31, 93, 80, 0.06), rgba(31, 93, 80, 0.12)),
+    var(--cream-100);
+}
+
+.brand-panel__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  justify-content: center;
+  min-height: 100%;
+  padding: 56px 52px;
+}
+
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-mark__icon {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  background: var(--green-700);
+  color: var(--cream-100);
+  font-size: 1.45rem;
+  box-shadow: 0 18px 30px rgba(31, 93, 80, 0.16);
+}
+
+.brand-mark__title,
+.brand-mark__tag,
+.eyebrow,
+.form-card__eyebrow,
+.form-note {
+  margin: 0;
+}
+
+.brand-mark__title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.brand-mark__tag {
+  margin-top: 3px;
+  color: var(--text-soft);
+  font-size: 0.95rem;
+}
+
+.eyebrow,
+.form-card__eyebrow {
+  color: var(--green-700);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.brand-copy h1,
+.form-card h2 {
+  margin: 10px 0 0;
+  font-family: "Newsreader", serif;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+}
+
+.brand-copy h1 {
+  max-width: 11ch;
+  font-size: clamp(2.8rem, 4vw, 4.6rem);
+}
+
+.brand-copy__text,
+.form-card__intro {
+  margin: 16px 0 0;
+  max-width: 32rem;
+  color: var(--text-soft);
+  font-size: 1.02rem;
+  line-height: 1.75;
+}
+
+.field-illustration {
+  position: relative;
+  height: 240px;
+  border: 1px solid rgba(31, 93, 80, 0.1);
+  border-radius: 28px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.84), rgba(247, 244, 234, 0.96));
+  overflow: hidden;
+}
+
+.field-illustration__sun {
+  position: absolute;
+  top: 34px;
+  right: 46px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(31, 93, 80, 0.1);
+  box-shadow: 0 0 0 16px rgba(31, 93, 80, 0.04);
+}
+
+.field-illustration__hill {
+  position: absolute;
+  left: -5%;
+  width: 110%;
+  border-radius: 50%;
+}
+
+.field-illustration__hill--back {
+  bottom: 76px;
+  height: 150px;
+  background: rgba(31, 93, 80, 0.12);
+}
+
+.field-illustration__hill--front {
+  bottom: -18px;
+  height: 165px;
+  background: rgba(31, 93, 80, 0.2);
+}
+
+.field-illustration__path {
+  position: absolute;
+  left: 50%;
+  bottom: -12px;
+  width: 130px;
+  height: 200px;
+  transform: translateX(-50%);
+  border-radius: 50% 50% 0 0;
+  background: rgba(247, 244, 234, 0.92);
+}
+
+.field-illustration__sprout {
+  position: absolute;
+  bottom: 38px;
+  width: 42px;
+  height: 64px;
+}
+
+.field-illustration__sprout::before,
+.field-illustration__sprout::after {
+  content: "";
+  position: absolute;
+  border: 2px solid rgba(31, 93, 80, 0.7);
+  border-bottom: 0;
+  background: transparent;
+}
+
+.field-illustration__sprout::before {
+  left: 18px;
+  top: 8px;
+  width: 2px;
+  height: 44px;
+  border: 0;
+  background: rgba(31, 93, 80, 0.7);
+}
+
+.field-illustration__sprout::after {
+  left: 6px;
+  top: 0;
+  width: 28px;
+  height: 18px;
+  border-radius: 100% 0;
+  transform: rotate(-18deg);
+}
+
+.field-illustration__sprout--left {
+  left: 70px;
+}
+
+.field-illustration__sprout--right {
+  right: 84px;
+}
+
+.field-illustration__sprout--right::after {
+  left: 8px;
+  border-radius: 0 100%;
+  transform: rotate(18deg);
+}
+
+.feature-list {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 15px 18px;
+  border: 1px solid rgba(31, 93, 80, 0.1);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.56);
+  color: var(--green-900);
+  font-weight: 600;
+}
+
+.feature-item__icon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  background: var(--green-050);
+  color: var(--green-700);
+}
+
+.feature-item__icon svg {
+  width: 21px;
+  height: 21px;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.form-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 42px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.form-card {
+  width: min(100%, 640px);
+  padding: 34px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--line-soft);
+  border-radius: 22px;
+  box-shadow: var(--shadow-soft);
+}
+
+.form-card h2 {
+  font-size: clamp(2rem, 2.5vw, 2.8rem);
+}
+
+.flash-stack {
+  display: grid;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.flash-message {
+  padding: 14px 16px;
+  border: 1px solid rgba(31, 93, 80, 0.14);
+  border-radius: 16px;
+  background: var(--green-050);
+  color: var(--green-800);
+  font-size: 0.95rem;
+}
+
+.registration-form {
+  margin-top: 28px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 16px;
+}
+
+.field {
+  display: grid;
+  gap: 9px;
+}
+
+.field--full {
+  grid-column: 1 / -1;
+}
+
+.field__label {
+  color: var(--green-800);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.field__input {
+  width: 100%;
+  padding: 15px 16px;
+  border: 1px solid rgba(31, 93, 80, 0.14);
+  border-radius: 16px;
+  background: #fffdfa;
+  color: var(--text-main);
+  outline: none;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease,
+    background-color 180ms ease;
+}
+
+.field__input::placeholder {
+  color: #97a29e;
+}
+
+.field.is-focused .field__input,
+.field__input:focus {
+  border-color: rgba(31, 93, 80, 0.5);
+  box-shadow: 0 0 0 4px rgba(31, 93, 80, 0.08);
+  background: #ffffff;
+}
+
+.field.is-filled .field__label {
+  color: var(--green-700);
+}
+
+.form-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(31, 93, 80, 0.08);
+}
+
+.form-note {
+  max-width: 26ch;
+  color: var(--text-soft);
+  font-size: 0.94rem;
+  line-height: 1.65;
+}
+
+.submit-button {
+  flex: 0 0 auto;
+  padding: 14px 24px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--green-700);
+  color: var(--cream-050);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  box-shadow: 0 16px 28px rgba(31, 93, 80, 0.2);
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.submit-button:hover {
+  background: var(--green-800);
+  box-shadow: 0 18px 34px rgba(31, 93, 80, 0.24);
+  transform: translateY(-1px);
+}
+
+.submit-button:active {
+  transform: translateY(0);
+}
+
+.registration-layout.is-ready .brand-panel__inner > *,
+.registration-layout.is-ready .form-card {
+  animation: rise-in 700ms ease both;
+}
+
+.registration-layout.is-ready .brand-copy {
+  animation-delay: 90ms;
+}
+
+.registration-layout.is-ready .field-illustration {
+  animation-delay: 150ms;
+}
+
+.registration-layout.is-ready .feature-list {
+  animation-delay: 220ms;
+}
+
+.registration-layout.is-ready .form-card {
+  animation-delay: 120ms;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1080px) {
+  .page-shell {
+    padding: 20px;
+  }
+
+  .registration-layout {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .brand-panel__inner,
+  .form-panel {
+    padding: 32px;
+  }
+
+  .brand-copy h1 {
+    max-width: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .page-shell {
+    padding: 14px;
+  }
+
+  .registration-layout {
+    border-radius: 24px;
+  }
+
+  .brand-panel__inner,
+  .form-panel,
+  .form-card {
+    padding: 24px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .field--full {
+    grid-column: auto;
+  }
+
+  .field-illustration {
+    height: 190px;
+  }
+
+  .form-card__footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .submit-button {
+    width: 100%;
+  }
+}
+</style>
+</head>
 <body>
-  <h1>Complete your buyer profile</h1>
-  {% with messages = get_flashed_messages() %}{% if messages %}<ul>{% for message in messages %}<li>{{ message }}</li>{% endfor %}</ul>{% endif %}{% endwith %}
-  <form method="post" action="{{ url_for('register_buyer') }}">
-    <label>Company name <input name="company_name" required></label><br><label>Contact person <input name="contact_person" required></label><br>
-    <label>Phone <input name="phone" inputmode="numeric" pattern="[0-9]{10}" required></label><br><label>Business email <input type="email" name="email" required></label><br>
-    <label>Address <input name="address"></label><br><label>Village / city <input name="village_city"></label><br>
-    <label>District <input name="district" required></label><br><label>State <input name="state" required></label><br>
-    <label>Business type <input name="business_type" required></label><br><button type="submit">Save buyer profile</button>
-  </form>
-</body></html>
+  <main class="page-shell">
+    <section class="registration-layout">
+      <aside class="brand-panel">
+        <div class="brand-panel__inner">
+          <div class="brand-mark">
+            <span class="brand-mark__icon" aria-hidden="true">🌾</span>
+            <div>
+              <p class="brand-mark__title">AgriLink</p>
+              <p class="brand-mark__tag">Farmer Market Assurance</p>
+            </div>
+          </div>
+
+          <div class="brand-copy">
+            <p class="eyebrow">Trusted farm-to-market onboarding</p>
+            <h1>Join AgriLink Today</h1>
+            <p class="brand-copy__text">
+              Connect with better markets and manage your farm-to-market journey with confidence.
+            </p>
+          </div>
+
+          <div class="field-illustration" aria-hidden="true">
+            <div class="field-illustration__sun"></div>
+            <div class="field-illustration__hill field-illustration__hill--back"></div>
+            <div class="field-illustration__hill field-illustration__hill--front"></div>
+            <div class="field-illustration__path"></div>
+            <div class="field-illustration__sprout field-illustration__sprout--left"></div>
+            <div class="field-illustration__sprout field-illustration__sprout--right"></div>
+          </div>
+
+          <ul class="feature-list" aria-label="AgriLink benefits">
+            <li class="feature-item">
+              <span class="feature-item__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img">
+                  <path d="M4.5 15.5 10 10l3 3 6.5-6.5"></path>
+                  <path d="M17 6.5h2.5V9"></path>
+                </svg>
+              </span>
+              <span>Better Price Discovery</span>
+            </li>
+            <li class="feature-item">
+              <span class="feature-item__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img">
+                  <path d="M12 3.5 5.5 6v5.5c0 4 2.8 7.2 6.5 9 3.7-1.8 6.5-5 6.5-9V6L12 3.5Z"></path>
+                  <path d="m9.5 12 1.8 1.8 3.7-3.9"></path>
+                </svg>
+              </span>
+              <span>Verified Buyers</span>
+            </li>
+            <li class="feature-item">
+              <span class="feature-item__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img">
+                  <path d="M4.5 8.5h15"></path>
+                  <rect x="3.5" y="5.5" width="17" height="13" rx="3"></rect>
+                  <path d="M7.5 14h4"></path>
+                </svg>
+              </span>
+              <span>Payment Visibility</span>
+            </li>
+          </ul>
+        </div>
+      </aside>
+
+      <section class="form-panel">
+        <div class="form-card">
+          <div class="form-card__header">
+            <p class="form-card__eyebrow">Buyer Registration</p>
+            <h2>Complete your buyer profile</h2>
+            <p class="form-card__intro">
+              Share your business details to create a polished AgriLink account experience.
+            </p>
+          </div>
+
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              <div class="flash-stack" aria-live="polite">
+                {% for message in messages %}
+                  <div class="flash-message">{{ message }}</div>
+                {% endfor %}
+              </div>
+            {% endif %}
+          {% endwith %}
+
+          <form class="registration-form" method="post" action="{{ url_for('register_buyer') }}">
+            <div class="form-grid">
+              <label class="field">
+                <span class="field__label">You're Name</span>
+                <input class="field__input" name="company_name" placeholder="Enter your name" required>
+              </label>
+
+              <!-- <label class="field">
+                <span class="field__label">Contact person</span>
+                <input class="field__input" name="contact_person" placeholder="Enter contact person" required>
+              </label> -->
+
+              <label class="field">
+                <span class="field__label">Phone Number</span>
+                <input class="field__input" name="phone" inputmode="numeric" pattern="[0-9]{10}" placeholder="Enter phone number" required>
+              </label>
+
+              <label class="field">
+                <span class="field__label">Business email</span>
+                <input class="field__input" type="email" name="email" placeholder="Enter business email" required>
+              </label>
+
+              <label class="field field--full">
+                <span class="field__label">Address</span>
+                <input class="field__input" name="address" placeholder="Enter business address">
+              </label>
+
+              <label class="field">
+                <span class="field__label">Village / city</span>
+                <input class="field__input" name="village_city" placeholder="Enter village or city">
+              </label>
+
+              <label class="field">
+                <span class="field__label">District</span>
+                <input class="field__input" name="district" placeholder="Enter district" required>
+              </label>
+
+              <label class="field">
+                <span class="field__label">State</span>
+                <input class="field__input" name="state" placeholder="Enter state" required>
+              </label>
+
+              <label class="field">
+                <span class="field__label">Business Type</span>
+                <input class="field__input" name="business_type" placeholder="Farmer,wholesaler,retailer..." required>
+              </label>
+            </div>
+
+            <div class="form-card__footer">
+              <p class="form-note">Built for dependable onboarding across the agricultural trade network.</p>
+              <button class="submit-button" type="submit">Save buyer profile</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>const registrationLayout = document.querySelector(".registration-layout");
+const fields = document.querySelectorAll(".field");
+
+if (registrationLayout) {
+  window.requestAnimationFrame(() => {
+    registrationLayout.classList.add("is-ready");
+  });
+}
+
+fields.forEach((field) => {
+  const input = field.querySelector(".field__input");
+
+  if (!input) {
+    return;
+  }
+
+  const syncState = () => {
+    field.classList.toggle("is-filled", input.value.trim().length > 0);
+  };
+
+  input.addEventListener("focus", () => {
+    field.classList.add("is-focused");
+  });
+
+  input.addEventListener("blur", () => {
+    field.classList.remove("is-focused");
+    syncState();
+  });
+
+  input.addEventListener("input", syncState);
+  syncState();
+});
+</script>
+</body>
+</html>
