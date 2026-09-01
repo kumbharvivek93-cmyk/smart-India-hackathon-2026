@@ -1,140 +1,455 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Farmer Registration</title>
+    <title>AgriLink Registration</title>
 
     <style>
+        :root {
+            --forest: #1f5d50;
+            --forest-deep: #18483e;
+            --forest-soft: #2f7264;
+            --cream: #f7f4ea;
+            --white: #ffffff;
+            --text: #23453d;
+            --muted: #5f786f;
+            --border: rgba(31, 93, 80, 0.14);
+            --shadow: 0 22px 55px rgba(24, 72, 62, 0.08);
+            --radius-xl: 22px;
+            --radius-md: 16px;
+        }
+
         * {
             box-sizing: border-box;
         }
 
         body {
             margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background: #f1f8e9;
+            min-height: 100vh;
+            padding: 32px;
+            font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(31, 93, 80, 0.08), transparent 28%),
+                radial-gradient(circle at bottom right, rgba(31, 93, 80, 0.07), transparent 30%),
+                var(--cream);
+            color: var(--text);
         }
 
         .container {
-            width: 90%;
-            max-width: 750px;
-            margin: 40px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            width: min(1180px, 100%);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: minmax(320px, 0.95fr) minmax(420px, 1.05fr);
+            gap: 28px;
+            align-items: stretch;
         }
 
-        h1 {
-            text-align: center;
-            color: #2e7d32;
-            margin-bottom: 30px;
+        .brand-panel {
+            position: relative;
+            overflow: hidden;
+            min-height: 760px;
+            padding: 44px 38px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.18));
+            border: 1px solid rgba(31, 93, 80, 0.1);
+            border-radius: 28px;
+        }
+
+        .brand-panel::before,
+        .brand-panel::after {
+            content: "";
+            position: absolute;
+            border-radius: 999px;
+            background: rgba(31, 93, 80, 0.06);
+            z-index: 0;
+        }
+
+        .brand-panel::before {
+            width: 240px;
+            height: 240px;
+            top: -72px;
+            right: -72px;
+        }
+
+        .brand-panel::after {
+            width: 180px;
+            height: 180px;
+            bottom: 34px;
+            left: -60px;
+        }
+
+        .brand-content,
+        .brand-illustration {
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-mark {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.66);
+            border: 1px solid rgba(31, 93, 80, 0.12);
+            color: var(--forest);
+        }
+
+        .brand-mark-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(31, 93, 80, 0.1);
+        }
+
+        .brand-mark-text strong {
+            display: block;
+            font-size: 1.05rem;
+            letter-spacing: 0.02em;
+        }
+
+        .brand-mark-text span {
+            display: block;
+            margin-top: 2px;
+            font-size: 0.84rem;
+            color: var(--muted);
+        }
+
+        .eyebrow {
+            display: inline-block;
+            margin: 34px 0 18px;
+            color: var(--forest-soft);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .brand-panel h1 {
+            margin: 0;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: clamp(2.5rem, 4vw, 4rem);
+            line-height: 1.05;
+            color: var(--forest-deep);
+        }
+
+        .brand-panel p {
+            max-width: 520px;
+            margin: 18px 0 0;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--muted);
+        }
+
+        .feature-list {
+            display: grid;
+            gap: 14px;
+            margin: 34px 0 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 15px 16px;
+            background: rgba(255, 255, 255, 0.54);
+            border: 1px solid rgba(31, 93, 80, 0.1);
+            border-radius: 16px;
+        }
+
+        .feature-icon {
+            width: 42px;
+            height: 42px;
+            flex: 0 0 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            background: rgba(31, 93, 80, 0.1);
+            color: var(--forest);
+        }
+
+        .feature-item span {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--forest-deep);
+        }
+
+        .brand-illustration {
+            margin-top: 36px;
+            padding: 24px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.45);
+            border: 1px solid rgba(31, 93, 80, 0.1);
+        }
+
+        .brand-illustration svg {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .form-panel {
+            display: flex;
+            align-items: center;
+        }
+
+        .form-card {
+            width: 100%;
+            padding: 34px 34px 30px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow);
+        }
+
+        .card-header {
+            margin-bottom: 26px;
+        }
+
+        .card-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: var(--cream);
+            color: var(--forest);
+            border: 1px solid rgba(31, 93, 80, 0.1);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .form-card h2 {
+            margin: 0;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 2rem;
+            line-height: 1.15;
+            color: var(--forest-deep);
+        }
+
+        .card-header p {
+            margin: 12px 0 0;
+            color: var(--muted);
+            line-height: 1.7;
+            font-size: 0.98rem;
+        }
+
+        .flash-messages {
+            margin: 0 0 22px;
+            padding: 14px 16px;
+            list-style: none;
+            background: var(--cream);
+            border: 1px solid rgba(31, 93, 80, 0.12);
+            border-radius: var(--radius-md);
+            color: var(--forest-deep);
+        }
+
+        .flash-messages li + li {
+            margin-top: 8px;
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 18px;
+        }
+
+        .section-title {
+            margin: 8px 0 -2px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--forest-soft);
         }
 
         .form-group {
-            margin-bottom: 18px;
+            margin: 0;
         }
 
         label {
             display: block;
-            margin-bottom: 7px;
-            font-weight: bold;
-            color: #333;
+            margin-bottom: 9px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--forest-deep);
         }
 
         input,
         select {
             width: 100%;
-            padding: 11px;
-            border: 1px solid #bbb;
-            border-radius: 6px;
-            font-size: 15px;
+            appearance: none;
+            padding: 14px 16px;
+            border: 1px solid rgba(31, 93, 80, 0.18);
+            border-radius: 14px;
+            background: #fcfbf7;
+            color: var(--text);
+            font-size: 0.98rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        input::placeholder {
+            color: #7d918a;
         }
 
         input:focus,
         select:focus {
             outline: none;
-            border-color: #4caf50;
+            border-color: rgba(31, 93, 80, 0.55);
+            box-shadow: 0 0 0 4px rgba(31, 93, 80, 0.1);
+            background: var(--white);
         }
 
         .row {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 15px;
         }
 
-        .row .form-group {
-            flex: 1;
-        }
-
         .farm-size {
-            display: flex;
+            display: grid;
+            grid-template-columns: minmax(0, 1.4fr) minmax(130px, 0.9fr);
             gap: 10px;
         }
 
-        .farm-size input {
-            flex: 2;
-        }
-
-        .farm-size select {
-            flex: 1;
-        }
-
         .fpo-section {
-            padding: 15px;
-            background: #f5f5f5;
-            border-radius: 8px;
-            margin-top: 10px;
+            padding: 18px;
+            background: linear-gradient(180deg, #fbfaf5, #f7f4ea);
+            border: 1px solid rgba(31, 93, 80, 0.12);
+            border-radius: var(--radius-md);
         }
 
         .radio-group {
             display: flex;
-            gap: 25px;
-            margin-top: 8px;
+            gap: 12px;
+            margin-top: 10px;
+            flex-wrap: wrap;
         }
 
-        .radio-group label {
-            font-weight: normal;
-            display: flex;
+        .radio-option {
+            position: relative;
+        }
+
+        .radio-option input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .radio-option span {
+            display: inline-flex;
             align-items: center;
-            gap: 5px;
+            justify-content: center;
+            min-width: 96px;
+            padding: 12px 16px;
+            border-radius: 999px;
+            border: 1px solid rgba(31, 93, 80, 0.16);
+            background: rgba(255, 255, 255, 0.92);
+            color: var(--forest-deep);
+            font-weight: 600;
+            transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
         }
 
-        .radio-group input {
-            width: auto;
+        .radio-option input:checked + span {
+            background: var(--forest);
+            border-color: var(--forest);
+            color: var(--white);
+            box-shadow: 0 12px 24px rgba(31, 93, 80, 0.18);
+        }
+
+        .helper-text {
+            margin: 10px 0 0;
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
         }
 
         button {
             width: 100%;
-            padding: 13px;
+            margin-top: 10px;
+            padding: 15px;
             border: none;
-            border-radius: 7px;
-            background: #2e7d32;
-            color: white;
-            font-size: 17px;
+            border-radius: 16px;
+            background: linear-gradient(180deg, var(--forest-soft), var(--forest));
+            color: var(--white);
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.01em;
             cursor: pointer;
-            margin-top: 15px;
+            box-shadow: 0 18px 30px rgba(31, 93, 80, 0.2);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
         }
 
         button:hover {
-            background: #1b5e20;
+            transform: translateY(-1px);
+            box-shadow: 0 20px 34px rgba(31, 93, 80, 0.24);
+            background: linear-gradient(180deg, #28695c, var(--forest-deep));
         }
 
         .required {
-            color: red;
+            color: var(--forest-soft);
         }
 
-        @media (max-width: 600px) {
-            .row {
-                flex-direction: column;
-                gap: 0;
+        .card-footer {
+            margin-top: 16px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        .card-footer strong {
+            color: var(--forest);
+            font-weight: 700;
+        }
+
+        @media (max-width: 980px) {
+            body {
+                padding: 20px;
             }
 
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .brand-panel {
+                min-height: auto;
+                padding: 32px 24px;
+            }
+
+            .form-card {
+                padding: 28px 22px 24px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 14px;
+            }
+
+            .row,
             .farm-size {
-                flex-direction: column;
+                grid-template-columns: 1fr;
+            }
+
+            .brand-panel h1 {
+                font-size: 2.25rem;
+            }
+
+            .form-card h2 {
+                font-size: 1.7rem;
             }
         }
     </style>
@@ -143,248 +458,303 @@
 <body>
 
 <div class="container">
-
-    <h1>🌾 Farmer Registration</h1>
-
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}<ul>{% for message in messages %}<li>{{ message }}</li>{% endfor %}</ul>{% endif %}
-    {% endwith %}
-
-    <form method="post" action="{{ url_for('register_farmer') }}">
-
-        <!-- Full Name -->
-        <div class="form-group">
-            <label for="full_name">
-                Full Name <span class="required">*</span>
-            </label>
-
-            <input
-                type="text"
-                id="full_name"
-                name="full_name"
-                placeholder="Enter your full name"
-                required
-            >
-        </div>
-
-
-        <!-- Phone -->
-        <div class="form-group">
-            <label for="phone">
-                Phone Number <span class="required">*</span>
-            </label>
-
-            <input
-                type="tel"
-                id="phone"
-                name="phone"
-                placeholder="Enter 10 digit mobile number"
-                pattern="[0-9]{10}"
-                maxlength="10"
-                required
-            >
-        </div>
-
-
-        <!-- Taluka and Village -->
-        <div class="row">
-
-            <div class="form-group">
-                <label for="taluka">
-                    Taluka <span class="required">*</span>
-                </label>
-
-                <input
-                    type="text"
-                    id="taluka"
-                    name="taluka"
-                    placeholder="Enter taluka"
-                    required
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="village">
-                    Village <span class="required">*</span>
-                </label>
-
-                <input
-                    type="text"
-                    id="village"
-                    name="village"
-                    placeholder="Enter village"
-                    required
-                >
-            </div>
-
-        </div>
-
-
-        <!-- District and State -->
-        <div class="row">
-
-            <div class="form-group">
-                <label for="district">
-                    District <span class="required">*</span>
-                </label>
-
-                <input
-                    type="text"
-                    id="district"
-                    name="district"
-                    placeholder="Enter district"
-                    required
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="state">
-                    State <span class="required">*</span>
-                </label>
-
-                <input
-                    type="text"
-                    id="state"
-                    name="state"
-                    placeholder="Enter state"
-                    value="Maharashtra"
-                    required
-                >
-            </div>
-
-        </div>
-
-
-        <!-- Pincode -->
-        <div class="form-group">
-            <label for="pincode">
-                Pincode <span class="required">*</span>
-            </label>
-
-            <input
-                type="text"
-                id="pincode"
-                name="pincode"
-                placeholder="Enter 6 digit pincode"
-                pattern="[0-9]{6}"
-                maxlength="6"
-                required
-            >
-        </div>
-
-
-        <!-- Farm Size -->
-        <div class="form-group">
-
-            <label>
-                Farm Size <span class="required">*</span>
-            </label>
-
-            <div class="farm-size">
-
-                <input
-                    type="number"
-                    id="farm_size"
-                    name="farm_size"
-                    placeholder="Enter farm size"
-                    min="0"
-                    step="0.01"
-                    required
-                >
-
-                <select
-                    name="farm_size_unit"
-                    id="farm_size_unit"
-                    required
-                >
-                    <option value="">Select unit</option>
-                    <option value="acre">Acre</option>
-                    <option value="hectare">Hectare</option>
-                    <option value="gunta">Gunta</option>
-                    <!-- <option value="guntha">Guntha</option> -->
-                    <option value="sqft">Square Feet</option>
-                    <option value="sq_meter">Square Meter</option>
-                </select>
-
-            </div>
-
-        </div>
-
-
-        <!-- FPO Member -->
-        <div class="fpo-section">
-
-            <div class="form-group">
-
-                <label>
-                    Are you an FPO member?
-                    <span class="required">*</span>
-                </label>
-
-                <div class="radio-group">
-
-                    <label>
-                        <input
-                            type="radio"
-                            name="fpo_member"
-                            value="yes"
-                            required
-                            onclick="showFpoName()"
-                        >
-                        Yes
-                    </label>
-
-                    <label>
-                        <input
-                            type="radio"
-                            name="fpo_member"
-                            value="no"
-                            required
-                            onclick="hideFpoName()"
-                        >
-                        No
-                    </label>
-
+    <section class="brand-panel">
+        <div class="brand-content">
+            <div class="brand-mark">
+                <div class="brand-mark-icon" aria-hidden="true">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 20V11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                        <path d="M12 11C8.5 11 6 8.5 6 5C9.5 5 12 7.5 12 11Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                        <path d="M12 14C15.2 14 18 11.6 18 8.2C14.8 8.2 12 10.6 12 14Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                    </svg>
                 </div>
-
+                <div class="brand-mark-text">
+                    <strong>AgriLink</strong>
+                    <span>Farmer Market Assurance</span>
+                </div>
             </div>
 
+            <span class="eyebrow">Farmer Registration</span>
+            <h1>Join AgriLink Today</h1>
+            <p>Connect with better markets and manage your farm-to-market journey with confidence.</p>
 
-            <!-- FPO Name -->
-            <div
-                class="form-group"
-                id="fpo-name-section"
-                style="display: none;"
-            >
-
-                <label for="fpo_name">
-                    FPO Name
-                </label>
-
-                <input
-                    type="text"
-                    id="fpo_name"
-                    name="fpo_name"
-                    placeholder="Enter FPO name"
-                >
-
-            </div>
-
+            <ul class="feature-list">
+                <li class="feature-item">
+                    <div class="feature-icon" aria-hidden="true">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                            <path d="M4 14L9 9L13 13L20 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M20 10V6H16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <span>Better Price Discovery</span>
+                </li>
+                <li class="feature-item">
+                    <div class="feature-icon" aria-hidden="true">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 3L19 6V11C19 15.2 16 18.9 12 20C8 18.9 5 15.2 5 11V6L12 3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                            <path d="M9.2 11.9L11.2 13.9L15.3 9.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <span>Verified Buyers</span>
+                </li>
+                <li class="feature-item">
+                    <div class="feature-icon" aria-hidden="true">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                            <path d="M4 8.5H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                            <rect x="4" y="5" width="16" height="14" rx="3" stroke="currentColor" stroke-width="1.8"/>
+                            <path d="M8 14H12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <span>Payment Visibility</span>
+                </li>
+            </ul>
         </div>
 
+        <!-- <div class="brand-illustration" aria-hidden="true">
+            <svg viewBox="0 0 420 280" fill="none">
+                <rect x="22" y="34" width="376" height="212" rx="28" fill="#F7F4EA" stroke="#1F5D50" stroke-opacity="0.14"/>
+                <path d="M66 195C102 171 138 161 174 163C210 165 250 183 298 176C332 171 352 158 374 135" stroke="#1F5D50" stroke-width="2.4" stroke-linecap="round"/>
+                <path d="M66 212C104 188 142 178 178 180C216 182 252 201 299 194C328 190 353 178 374 160" stroke="#1F5D50" stroke-width="2.4" stroke-linecap="round" opacity="0.75"/>
+                <path d="M116 158C116 135 129 116 149 104C159 118 164 131 164 144C164 167 151 186 131 198C121 184 116 171 116 158Z" stroke="#1F5D50" stroke-width="2.4" stroke-linejoin="round"/>
+                <path d="M131 198V225" stroke="#1F5D50" stroke-width="2.4" stroke-linecap="round"/>
+                <path d="M216 142C216 118 230 98 253 84C264 99 269 114 269 128C269 151 255 173 233 186C222 172 216 157 216 142Z" stroke="#1F5D50" stroke-width="2.4" stroke-linejoin="round"/>
+                <path d="M233 186V224" stroke="#1F5D50" stroke-width="2.4" stroke-linecap="round"/>
+                <path d="M309 154C309 134 321 119 339 109C348 120 352 132 352 144C352 163 341 180 323 191C314 179 309 166 309 154Z" stroke="#1F5D50" stroke-width="2.4" stroke-linejoin="round"/>
+                <path d="M323 191V223" stroke="#1F5D50" stroke-width="2.4" stroke-linecap="round"/>
+                <circle cx="90" cy="82" r="22" stroke="#1F5D50" stroke-width="2.4" opacity="0.24"/>
+                <path d="M82 82L88 88L99 76" stroke="#1F5D50" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg> -->
+        <!-- </div> -->
+    </section>
 
-        <!-- Submit -->
-        <button type="submit">
-            Register as Farmer
-        </button>
+    <section class="form-panel">
+        <div class="form-card">
+            <div class="card-header">
+                <div class="card-kicker">Secure Farmer Sign-Up</div>
+                <h2>Create your AgriLink account</h2>
+                <p>Share your farm details to access verified buyers, clearer pricing insights, and smoother market coordination.</p>
+            </div>
 
-    </form>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul class="flash-messages">
+                        {% for message in messages %}<li>{{ message }}</li>{% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
 
+            <form method="post" action="{{ url_for('register_farmer') }}">
+                <div class="form-grid">
+                    <div class="section-title">Personal Details</div>
+
+                    <div class="form-group">
+                        <label for="full_name">
+                            Full Name <span class="required">*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="full_name"
+                            name="full_name"
+                            placeholder="Enter your full name"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">
+                            Phone Number <span class="required">*</span>
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="phone"
+                            name="phone"
+                            placeholder="Enter 10 digit mobile number"
+                            pattern="[0-9]{10}"
+                            maxlength="10"
+                            required
+                        >
+                    </div>
+
+                    <div class="section-title">Location</div>
+
+                    <div class="row">
+                        <div class="form-group">
+                            <label for="taluka">
+                                Taluka <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                id="taluka"
+                                name="taluka"
+                                placeholder="Enter taluka"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="village">
+                                Village <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                id="village"
+                                name="village"
+                                placeholder="Enter village"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group">
+                            <label for="district">
+                                District <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                id="district"
+                                name="district"
+                                placeholder="Enter district"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="state">
+                                State <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                id="state"
+                                name="state"
+                                placeholder="Enter state"
+                                value="Maharashtra"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pincode">
+                            Pincode <span class="required">*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="pincode"
+                            name="pincode"
+                            placeholder="Enter 6 digit pincode"
+                            pattern="[0-9]{6}"
+                            maxlength="6"
+                            required
+                        >
+                    </div>
+
+                    <div class="section-title">Farm Profile</div>
+
+                    <div class="form-group">
+                        <label>
+                            Farm Size <span class="required">*</span>
+                        </label>
+
+                        <div class="farm-size">
+                            <input
+                                type="number"
+                                id="farm_size"
+                                name="farm_size"
+                                placeholder="Enter farm size"
+                                min="0"
+                                step="0.01"
+                                required
+                            >
+
+                            <select
+                                name="farm_size_unit"
+                                id="farm_size_unit"
+                                required
+                            >
+                                <option value="">Select unit</option>
+                                <option value="acre">Acre</option>
+                                <option value="hectare">Hectare</option>
+                                <option value="gunta">Gunta</option>
+                                <option value="sqft">Square Feet</option>
+                                <option value="sq_meter">Square Meter</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="fpo-section">
+                        <div class="form-group">
+                            <label>
+                                Are you an FPO member?
+                                <span class="required">*</span>
+                            </label>
+
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input
+                                        type="radio"
+                                        name="fpo_member"
+                                        value="yes"
+                                        required
+                                        onclick="showFpoName()"
+                                    >
+                                    <span>Yes</span>
+                                </label>
+
+                                <label class="radio-option">
+                                    <input
+                                        type="radio"
+                                        name="fpo_member"
+                                        value="no"
+                                        required
+                                        onclick="hideFpoName()"
+                                    >
+                                    <span>No</span>
+                                </label>
+                            </div>
+
+                            <p class="helper-text">If you are part of an FPO, share the name to help AgriLink connect you with the right market network.</p>
+                        </div>
+
+                        <div
+                            class="form-group"
+                            id="fpo-name-section"
+                            style="display: none;"
+                        >
+                            <label for="fpo_name">
+                                FPO Name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="fpo_name"
+                                name="fpo_name"
+                                placeholder="Enter FPO name"
+                            >
+                        </div>
+                    </div>
+
+                    <button type="submit">
+                        Register as Farmer
+                    </button>
+                </div>
+            </form>
+
+            <div class="card-footer">
+                Already part of AgriLink? <strong>Sign in</strong>
+            </div>
+        </div>
+    </section>
 </div>
 
-
 <script>
-
     function showFpoName() {
         document.getElementById("fpo-name-section").style.display = "block";
         document.getElementById("fpo_name").required = true;
@@ -395,9 +765,7 @@
         document.getElementById("fpo_name").required = false;
         document.getElementById("fpo_name").value = "";
     }
-
 </script>
 
 </body>
 </html>
-```
