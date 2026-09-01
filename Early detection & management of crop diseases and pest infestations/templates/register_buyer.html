@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Buyer profile | AgriLink</title></head>
+<body>
+  <h1>Complete your buyer profile</h1>
+  {% with messages = get_flashed_messages() %}{% if messages %}<ul>{% for message in messages %}<li>{{ message }}</li>{% endfor %}</ul>{% endif %}{% endwith %}
+  <form method="post" action="{{ url_for('register_buyer') }}">
+    <label>Company name <input name="company_name" required></label><br><label>Contact person <input name="contact_person" required></label><br>
+    <label>Phone <input name="phone" inputmode="numeric" pattern="[0-9]{10}" required></label><br><label>Business email <input type="email" name="email" required></label><br>
+    <label>Address <input name="address"></label><br><label>Village / city <input name="village_city"></label><br>
+    <label>District <input name="district" required></label><br><label>State <input name="state" required></label><br>
+    <label>Business type <input name="business_type" required></label><br><button type="submit">Save buyer profile</button>
+  </form>
+</body></html>

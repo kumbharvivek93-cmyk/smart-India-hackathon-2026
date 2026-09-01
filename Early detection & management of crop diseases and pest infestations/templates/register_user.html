@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Create account | AgriLink</title></head>
+<body>
+  <h1>Create your AgriLink account</h1>
+  {% with messages = get_flashed_messages() %}{% if messages %}<ul>{% for message in messages %}<li>{{ message }}</li>{% endfor %}</ul>{% endif %}{% endwith %}
+  <form method="post" action="{{ url_for('registration_user') }}">
+    <label>Username <input name="username" required minlength="2"></label><br>
+    <label>Email <input type="email" name="email" required></label><br>
+    <label>Password <input type="password" name="password" required minlength="6"></label><br>
+    <label>Role <select name="role" required><option value="">Select your role</option><option value="farmer">Farmer</option><option value="buyer">Buyer</option></select></label><br>
+    <button type="submit">Create account</button>
+  </form>
+  <p>Already registered? <a href="{{ url_for('login_user') }}">Log in</a>.</p>
+</body></html>
