@@ -1,0 +1,50 @@
+#include <Wire.h>
+
+#define MPU_ADDR 0x68
+
+int16_t AccX, AccY, AccZ;
+int16_t GyroX, GyroY, GyroZ;
+int16_t Temp;
+
+void setup() {
+  Serial.begin(115200);
+  Wire.begin(21, 22); // SDA, SCL
+
+  // Wake up the sensor (PWR_MGMT_1 register = 0x6B, set to 0)
+  Wire.beginTransmission(MPU_ADDR);
+  Wire.write(0x6B);
+  Wire.write(0);
+  Wire.endTransmission(true);
+
+  Serial.println("MPU6500 Initialized!");
+  delay(100);
+}
+
+void loop() {
+  Wire.beginTransmission(MPU_ADDR);
+  Wire.write(0x3B); // Starting register for Accel readings
+  Wire.endTransmission(false);
+  Wire.requestFrom(MPU_ADDR, 14, true); // Read 14 registers
+
+  AccX = Wire.read() << 8 | Wire.read();
+  AccY = Wire.read() << 8 | Wire.read();
+  AccZ = Wire.read() << 8 | Wire.read();
+  Temp = Wire.read() << 8 | Wire.read();
+  GyroX = Wire.read() << 8 | Wire.read();
+  GyroY = Wire.read() << 8 | Wire.read();
+  GyroZ = Wire.read() << 8 | Wire.read();
+
+  Serial.println("---------------------------");
+  Serial.print("Accel X: "); Serial.print(AccX / 16384.0);
+  Serial.print(" Y: "); Serial.print(AccY / 16384.0);
+  Serial.print(" Z: "); Serial.println(AccZ / 16384.0);
+
+  Serial.print("Gyro X: "); Serial.print(GyroX / 131.0);
+  Serial.print(" Y: "); Serial.print(GyroY / 131.0);
+  Serial.print(" Z: "); Serial.println(GyroZ / 131.0);
+
+  Serial.print("Temp: "); Serial.print((Temp / 340.0) + 36.53);
+  Serial.println(" °C");
+
+  delay(1000);
+}
