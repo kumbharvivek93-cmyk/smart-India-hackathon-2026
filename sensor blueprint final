@@ -1,0 +1,181 @@
+/*
+  ESP32 + MPU6500 -> Flask backend over Wi-Fi
+  ------------------------------------------
+  Reads raw accel + gyro from MPU6500 over I2C, computes tilt (from accel)
+  and a rolling vibration RMS (from accel magnitude), then POSTs a JSON
+  payload to your Flask /api/sensor endpoint.
+
+  LIBRARIES NEEDED (Arduino IDE -> Sketch -> Include Library -> Manage Libraries):
+    - "ArduinoJson" by Benoit Blanchon   (search: ArduinoJson, install v6.x)
+  (No MPU library needed — this sketch talks to the MPU6500 directly over I2C,
+   since MPU6050 libraries don't always play nice with the 6500's WHO_AM_I byte.)
+
+  WIRING (MPU6500 -> ESP32):
+    VCC  -> 3.3V
+    GND  -> GND
+    SDA  -> GPIO 21
+    SCL  -> GPIO 22
+    AD0  -> GND   (sets I2C address to 0x68; leave unconnected if your board defaults to 0x68 anyway)
+
+  BEFORE UPLOADING:
+    1. Set WIFI_SSID / WIFI_PASSWORD below.
+    2. Set SERVER_URL to your laptop's LOCAL IP (not localhost!) + Flask port.
+       Find your laptop's IP with `ipconfig` (Windows) or `ifconfig`/`ip a` (Mac/Linux).
+       Example: "http://192.168.1.42:5000/api/sensor"
+    3. Make sure your ESP32 and laptop are on the SAME Wi-Fi network.
+
+  EXPECTED SERIAL MONITOR OUTPUT (115200 baud):
+    Connecting to WiFi...
+    WiFi connected. IP: 192.168.1.55
+    Sent -> {"node_id":"NODE-01","accel_x_g":0.01,...}  [HTTP 200]
+    Sent -> {"node_id":"NODE-01","accel_x_g":0.02,...}  [HTTP 200]
+    ...
+
+  TROUBLESHOOTING:
+    - "WiFi connected" never prints -> wrong SSID/password, or 5GHz-only network (ESP32 needs 2.4GHz).
+    - HTTP -1 / connection refused -> wrong SERVER_URL IP, Flask not running, or laptop firewall blocking the port.
+    - All zeros from sensor -> check wiring, especially SDA/SCL not swapped, and that AD0 is grounded.
+    - I2C error / "MPU6500 not found" -> run an I2C scanner sketch first to confirm the address (should be 0x68).
+*/
+
+#include <Wire.h>
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include <ArduinoJson.h>
+
+// ---------- CONFIG ----------
+const char* WIFI_SSID     = "Airtel_Airtel vivek";
+const char* WIFI_PASSWORD = "Vivekkali@12345";
+const char* SERVER_URL    = "http://192.168.1.7:5000/api/sensor"; // <-- change to your laptop IP
+const char* NODE_ID       = "NODE-01";
+
+const uint8_t MPU_ADDR = 0x68;
+const unsigned long SEND_INTERVAL_MS = 2000; // send every 2 seconds
+
+// vibration RMS window
+const int WINDOW_SIZE = 20;
+float accelMagBuffer[WINDOW_SIZE];
+int bufferIndex = 0;
+bool bufferFilled = false;
+
+unsigned long lastSendTime = 0;
+
+// ---------- MPU6500 raw register read ----------
+void mpuWrite(uint8_t reg, uint8_t val) {
+  Wire.beginTransmission(MPU_ADDR);
+  Wire.write(reg);
+  Wire.write(val);
+  Wire.endTransmission();
+}
+
+void mpuInit() {
+  mpuWrite(0x6B, 0x00); // PWR_MGMT_1: wake up
+  delay(100);
+  mpuWrite(0x1C, 0x00); // ACCEL_CONFIG: +/-2g
+  mpuWrite(0x1B, 0x00); // GYRO_CONFIG: +/-250 dps
+}
+
+bool readMPU(float &ax, float &ay, float &az, float &gx, float &gy, float &gz) {
+  Wire.beginTransmission(MPU_ADDR);
+  Wire.write(0x3B); // ACCEL_XOUT_H
+  if (Wire.endTransmission(false) != 0) return false;
+
+  Wire.requestFrom((int)MPU_ADDR, 14, true);
+  if (Wire.available() < 14) return false;
+
+  int16_t rawAx = (Wire.read() << 8) | Wire.read();
+  int16_t rawAy = (Wire.read() << 8) | Wire.read();
+  int16_t rawAz = (Wire.read() << 8) | Wire.read();
+  Wire.read(); Wire.read(); // skip temperature
+  int16_t rawGx = (Wire.read() << 8) | Wire.read();
+  int16_t rawGy = (Wire.read() << 8) | Wire.read();
+  int16_t rawGz = (Wire.read() << 8) | Wire.read();
+
+  // scale: accel +/-2g -> 16384 LSB/g, gyro +/-250dps -> 131 LSB/(deg/s)
+  ax = rawAx / 16384.0;
+  ay = rawAy / 16384.0;
+  az = rawAz / 16384.0;
+  gx = rawGx / 131.0;
+  gy = rawGy / 131.0;
+  gz = rawGz / 131.0;
+  return true;
+}
+
+void setup() {
+  Serial.begin(115200);
+  Wire.begin(21, 22); // SDA, SCL
+  mpuInit();
+
+  Serial.println("Connecting to WiFi...");
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println();
+  Serial.print("WiFi connected. IP: ");
+  Serial.println(WiFi.localIP());
+}
+
+void loop() {
+  float ax, ay, az, gx, gy, gz;
+  if (!readMPU(ax, ay, az, gx, gy, gz)) {
+    Serial.println("MPU6500 read failed");
+    delay(500);
+    return;
+  }
+
+  // tilt from accel (degrees)
+  float tiltX = atan2(ay, sqrt(ax * ax + az * az)) * 180.0 / PI;
+  float tiltY = atan2(-ax, sqrt(ay * ay + az * az)) * 180.0 / PI;
+
+  // rolling vibration RMS from accel magnitude minus gravity
+  float mag = sqrt(ax * ax + ay * ay + az * az) - 1.0; // remove gravity baseline
+  accelMagBuffer[bufferIndex] = mag;
+  bufferIndex = (bufferIndex + 1) % WINDOW_SIZE;
+  if (bufferIndex == 0) bufferFilled = true;
+
+  int count = bufferFilled ? WINDOW_SIZE : bufferIndex;
+  float sumSq = 0;
+  for (int i = 0; i < count; i++) sumSq += accelMagBuffer[i] * accelMagBuffer[i];
+  float vibrationRMS = count > 0 ? sqrt(sumSq / count) : 0;
+
+  if (millis() - lastSendTime >= SEND_INTERVAL_MS) {
+    lastSendTime = millis();
+
+    if (WiFi.status() == WL_CONNECTED) {
+      HTTPClient http;
+      http.begin(SERVER_URL);
+      http.addHeader("Content-Type", "application/json");
+
+      StaticJsonDocument<512> doc;
+      doc["node_id"] = NODE_ID;
+      doc["accel_x_g"] = ax;
+      doc["accel_y_g"] = ay;
+      doc["accel_z_g"] = az;
+      doc["gyro_x_dps"] = gx;
+      doc["gyro_y_dps"] = gy;
+      doc["gyro_z_dps"] = gz;
+      doc["tilt_x_deg"] = tiltX;
+      doc["tilt_y_deg"] = tiltY;
+      doc["vibration_rms_g"] = vibrationRMS;
+      // displacement/crack_width simulated for now -- no sensor for these yet
+      doc["displacement_mm"] = 0.0;
+      doc["crack_width_mm"] = 0.0;
+
+      String payload;
+      serializeJson(doc, payload);
+
+      int httpCode = http.POST(payload);
+      Serial.print("Sent -> ");
+      Serial.print(payload);
+      Serial.print("  [HTTP ");
+      Serial.print(httpCode);
+      Serial.println("]");
+
+      http.end();
+    } else {
+      Serial.println("WiFi disconnected, skipping send.");
+    }
+  }
+}
