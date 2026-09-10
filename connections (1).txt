@@ -1,0 +1,68 @@
+AI-Enabled Smart Mine Subsidence Monitoring and Early Warning System
+Hardware Wiring / Connections Reference
+=========================================
+
+Board: ESP32 Dev Module (ESP-WROOM-32)
+
+
+1. MPU6500 SENSOR #1 (I2C Address: 0x68)
+-----------------------------------------
+MPU6500 Pin        ESP32 Pin
+VCC                 3.3V
+GND                 GND
+SDA                 GPIO 21
+SCL                 GPIO 22
+AD0                 GND        (sets address to 0x68)
+
+
+2. MPU6500 SENSOR #2 (I2C Address: 0x69)
+-----------------------------------------
+MPU6500 Pin        ESP32 Pin
+VCC                 3.3V
+GND                 GND
+SDA                 GPIO 21    (shared bus with Sensor #1)
+SCL                 GPIO 22    (shared bus with Sensor #1)
+AD0                 3.3V       (sets address to 0x69)
+
+Note: Both MPU6500 sensors share the same I2C bus (SDA/SCL).
+      AD0 pin determines the I2C address (LOW = 0x68, HIGH = 0x69).
+
+
+3. HC-SR04 ULTRASONIC DISTANCE SENSOR
+-----------------------------------------
+HC-SR04 Pin        ESP32 Pin
+VCC                 5V / VIN
+GND                 GND
+TRIG                GPIO 5
+ECHO                GPIO 18    (through a voltage divider — steps 5V down to ~3.3V)
+
+Note: ECHO outputs 5V logic, but ESP32 GPIOs are only 3.3V tolerant.
+      A voltage divider (e.g. two resistors, such as 1k/2k) MUST be used
+      on the ECHO line to avoid damaging the GPIO pin.
+
+
+4. ACTIVE BUZZER
+-----------------------------------------
+Buzzer Pin         ESP32 Pin
++ / VCC / Signal    GPIO 23
+- / GND             GND
+
+Note: Active buzzer only needs digitalWrite(HIGH/LOW) — no PWM tone
+      generation required (unlike a passive buzzer).
+
+
+SUMMARY - ESP32 PIN USAGE
+=========================================
+GPIO 21   -> I2C SDA (shared: MPU Sensor #1 + Sensor #2)
+GPIO 22   -> I2C SCL (shared: MPU Sensor #1 + Sensor #2)
+GPIO 5    -> HC-SR04 TRIG
+GPIO 18   -> HC-SR04 ECHO (via voltage divider)
+GPIO 23   -> Active Buzzer signal
+3.3V      -> MPU Sensor #1 VCC, MPU Sensor #2 VCC, MPU Sensor #2 AD0
+5V / VIN  -> HC-SR04 VCC
+GND       -> Common ground for all components
+
+
+Project: AI-Enabled Smart Mine Subsidence Monitoring and Early Warning System
+Pipeline: MPU6500 x2 + HC-SR04 + Buzzer -> ESP32 -> Wi-Fi -> Flask REST API
+          -> ML model -> Risk Score -> Dashboard -> Alert
