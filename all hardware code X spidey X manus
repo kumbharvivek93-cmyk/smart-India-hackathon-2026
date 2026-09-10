@@ -1,0 +1,251 @@
+/*
+  ESP32 + Dual MPU6500 + HC-SR04 + Buzzer -> Flask backend over Wi-Fi
+  ---------------------------------------------------------------------
+  Reads MPU1 -> wait 1s -> MPU2 -> wait 1s -> HC-SR04 -> wait 1s.
+  Buzzer now triggers whenever HC-SR04 distance drops below 10 cm
+  (obstacle/proximity alert), instead of the old displacement-baseline logic.
+*/
+
+#include <Wire.h>
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include <ArduinoJson.h>
+
+// ---------- CONFIG ----------
+const char* WIFI_SSID     = "Airtel_Airtel vivek";
+const char* WIFI_PASSWORD = "Vivekkali@12345";
+const char* SERVER_URL    = "http://192.168.1.7:5000/api/sensor";
+
+const uint8_t MPU1_ADDR = 0x68;
+const uint8_t MPU2_ADDR = 0x69;
+const char* NODE1_ID = "NODE-01";
+const char* NODE2_ID = "NODE-02";
+
+const unsigned long SEND_INTERVAL_MS = 2000;
+
+const int TRIG_PIN = 5;
+const int ECHO_PIN = 18;
+const int BUZZER_PIN = 23;
+
+const float DISTANCE_ALERT_THRESHOLD_CM = 10.0; // buzzer ON if distance < this
+
+float baselineDistanceCM = -1; // still tracked for displacement_cm sent to Flask
+
+const int WINDOW_SIZE = 20;
+float accelMagBuffer1[WINDOW_SIZE];
+float accelMagBuffer2[WINDOW_SIZE];
+int bufferIndex1 = 0, bufferIndex2 = 0;
+bool bufferFilled1 = false, bufferFilled2 = false;
+
+unsigned long lastSendTime = 0;
+
+void mpuWrite(uint8_t addr, uint8_t reg, uint8_t val) {
+  Wire.beginTransmission(addr);
+  Wire.write(reg);
+  Wire.write(val);
+  Wire.endTransmission();
+}
+
+void mpuInit(uint8_t addr) {
+  mpuWrite(addr, 0x6B, 0x00);
+  delay(100);
+  mpuWrite(addr, 0x1C, 0x00);
+  mpuWrite(addr, 0x1B, 0x00);
+}
+
+bool readMPU(uint8_t addr, float &ax, float &ay, float &az, float &gx, float &gy, float &gz) {
+  Wire.beginTransmission(addr);
+  Wire.write(0x3B);
+  if (Wire.endTransmission(false) != 0) return false;
+
+  Wire.requestFrom((int)addr, 14, true);
+  if (Wire.available() < 14) return false;
+
+  int16_t rawAx = (Wire.read() << 8) | Wire.read();
+  int16_t rawAy = (Wire.read() << 8) | Wire.read();
+  int16_t rawAz = (Wire.read() << 8) | Wire.read();
+  Wire.read(); Wire.read();
+  int16_t rawGx = (Wire.read() << 8) | Wire.read();
+  int16_t rawGy = (Wire.read() << 8) | Wire.read();
+  int16_t rawGz = (Wire.read() << 8) | Wire.read();
+
+  ax = rawAx / 16384.0;
+  ay = rawAy / 16384.0;
+  az = rawAz / 16384.0;
+  gx = rawGx / 131.0;
+  gy = rawGy / 131.0;
+  gz = rawGz / 131.0;
+  return true;
+}
+
+// ---------- HC-SR04 distance read (cm) ----------
+float readDistanceCM() {
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+
+  long duration = pulseIn(ECHO_PIN, HIGH, 30000);
+  if (duration == 0) return -1;
+
+  return duration * 0.0343 / 2.0; // cm
+}
+
+float updateVibrationRMS(float mag, float* buffer, int &idx, bool &filled) {
+  buffer[idx] = mag;
+  idx = (idx + 1) % WINDOW_SIZE;
+  if (idx == 0) filled = true;
+
+  int count = filled ? WINDOW_SIZE : idx;
+  float sumSq = 0;
+  for (int i = 0; i < count; i++) sumSq += buffer[i] * buffer[i];
+  return count > 0 ? sqrt(sumSq / count) : 0;
+}
+
+void sendPayload(const char* nodeId, float ax, float ay, float az,
+                  float gx, float gy, float gz, float tiltX, float tiltY,
+                  float vibRMS, float displacementCM) {
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("WiFi disconnected, skipping send.");
+    return;
+  }
+
+  HTTPClient http;
+  http.begin(SERVER_URL);
+  http.addHeader("Content-Type", "application/json");
+
+  StaticJsonDocument<512> doc;
+  doc["node_id"] = nodeId;
+  doc["accel_x_g"] = ax;
+  doc["accel_y_g"] = ay;
+  doc["accel_z_g"] = az;
+  doc["gyro_x_dps"] = gx;
+  doc["gyro_y_dps"] = gy;
+  doc["gyro_z_dps"] = gz;
+  doc["tilt_x_deg"] = tiltX;
+  doc["tilt_y_deg"] = tiltY;
+  doc["vibration_rms_g"] = vibRMS;
+  doc["displacement_cm"] = displacementCM;
+  doc["crack_width_mm"] = 0.0;
+
+  String payload;
+  serializeJson(doc, payload);
+
+  int httpCode = http.POST(payload);
+  Serial.print("Sent [");
+  Serial.print(nodeId);
+  Serial.print("] -> ");
+  Serial.print(payload);
+  Serial.print("  [HTTP ");
+  Serial.print(httpCode);
+  Serial.println("]");
+
+  http.end();
+}
+
+void setup() {
+  Serial.begin(115200);
+  Wire.begin(21, 22);
+
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+  pinMode(BUZZER_PIN, OUTPUT);
+  digitalWrite(BUZZER_PIN, LOW);
+
+  mpuInit(MPU1_ADDR);
+  mpuInit(MPU2_ADDR);
+
+  Serial.println("Connecting to WiFi...");
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println();
+  Serial.print("WiFi connected. IP: ");
+  Serial.println(WiFi.localIP());
+}
+
+void loop() {
+  // ---- MPU 1 ----
+  float ax1, ay1, az1, gx1, gy1, gz1;
+  bool ok1 = readMPU(MPU1_ADDR, ax1, ay1, az1, gx1, gy1, gz1);
+  if (ok1) {
+    Serial.println("===== MPU1 (0x68) =====");
+    Serial.print("Accel X: "); Serial.print(ax1);
+    Serial.print(" Y: "); Serial.print(ay1);
+    Serial.print(" Z: "); Serial.println(az1);
+    Serial.print("Gyro X: "); Serial.print(gx1);
+    Serial.print(" Y: "); Serial.print(gy1);
+    Serial.print(" Z: "); Serial.println(gz1);
+  } else {
+    Serial.println("MPU1 (0x68) read failed");
+  }
+  delay(1000);
+
+  // ---- MPU 2 ----
+  float ax2, ay2, az2, gx2, gy2, gz2;
+  bool ok2 = readMPU(MPU2_ADDR, ax2, ay2, az2, gx2, gy2, gz2);
+  if (ok2) {
+    Serial.println("===== MPU2 (0x69) =====");
+    Serial.print("Accel X: "); Serial.print(ax2);
+    Serial.print(" Y: "); Serial.print(ay2);
+    Serial.print(" Z: "); Serial.println(az2);
+    Serial.print("Gyro X: "); Serial.print(gx2);
+    Serial.print(" Y: "); Serial.print(gy2);
+    Serial.print(" Z: "); Serial.println(gz2);
+  } else {
+    Serial.println("MPU2 (0x69) read failed");
+  }
+  delay(1000);
+
+  // ---- HC-SR04 ----
+  float distanceCM = readDistanceCM();
+  bool distOk = (distanceCM > 0);
+
+  if (distOk) {
+    if (baselineDistanceCM < 0) baselineDistanceCM = distanceCM;
+
+    float displacement = abs(distanceCM - baselineDistanceCM);
+    Serial.println("===== HC-SR04 =====");
+    Serial.print("Distance: "); Serial.print(distanceCM);
+    Serial.print(" cm | Displacement from baseline: "); Serial.print(displacement);
+    Serial.println(" cm");
+
+    // Buzzer triggers purely on absolute distance now
+    if (distanceCM < DISTANCE_ALERT_THRESHOLD_CM) {
+      digitalWrite(BUZZER_PIN, HIGH);
+      Serial.println(">>> ALERT: Object within 10cm! Buzzer ON <<<");
+    } else {
+      digitalWrite(BUZZER_PIN, LOW);
+    }
+  } else {
+    Serial.println("HC-SR04: no echo received");
+    digitalWrite(BUZZER_PIN, LOW); // no reading = no false alarm
+  }
+  delay(1000);
+
+  // ---- Send to Flask every SEND_INTERVAL_MS ----
+  if (millis() - lastSendTime >= SEND_INTERVAL_MS) {
+    lastSendTime = millis();
+
+    float displacementToSend = distOk ? abs(distanceCM - baselineDistanceCM) : 0.0;
+
+    if (ok1) {
+      float tiltX1 = atan2(ay1, sqrt(ax1 * ax1 + az1 * az1)) * 180.0 / PI;
+      float tiltY1 = atan2(-ax1, sqrt(ay1 * ay1 + az1 * az1)) * 180.0 / PI;
+      float mag1 = sqrt(ax1 * ax1 + ay1 * ay1 + az1 * az1) - 1.0;
+      float vibRMS1 = updateVibrationRMS(mag1, accelMagBuffer1, bufferIndex1, bufferFilled1);
+      sendPayload(NODE1_ID, ax1, ay1, az1, gx1, gy1, gz1, tiltX1, tiltY1, vibRMS1, displacementToSend);
+    }
+
+    if (ok2) {
+      float tiltX2 = atan2(ay2, sqrt(ax2 * ax2 + az2 * az2)) * 180.0 / PI;
+      float tiltY2 = atan2(-ax2, sqrt(ay2 * ay2 + az2 * az2)) * 180.0 / PI;
+      float mag2 = sqrt(ax2 * ax2 + ay2 * ay2 + az2 * az2) - 1.0;
+      float vibRMS2 = updateVibrationRMS(mag2, accelMagBuffer2, bufferIndex2, bufferFilled2);
+      sendPayload(NODE2_ID, ax2, ay2, az2, gx2, gy2, gz2, tiltX2, tiltY2, vibRMS2, displacementToSend);
+    }
+  }
+}
